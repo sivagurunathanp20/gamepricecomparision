@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-3 col-lg-2 mb-4">
+    <div class="glass admin-sidebar p-3">
+      <h6 class="text-muted small text-uppercase mb-3">Admin Panel</h6>
+      <nav class="nav flex-column">
+        <a class="nav-link {% if request.endpoint=='admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}"><i class="fa-solid fa-gauge me-2"></i>Analytics</a>
+        <a class="nav-link {% if request.endpoint and request.endpoint.startswith('admin.game') %}active{% endif %}" href="{{ url_for('admin.games') }}"><i class="fa-solid fa-dice-d20 me-2"></i>Games</a>
+        <a class="nav-link {% if request.endpoint and request.endpoint.startswith('admin.deal') %}active{% endif %}" href="{{ url_for('admin.deals') }}"><i class="fa-solid fa-tags me-2"></i>Deals</a>
+        <a class="nav-link {% if request.endpoint in ['admin.users','admin.toggle_admin','admin.user_delete'] %}active{% endif %}" href="{{ url_for('admin.users') }}"><i class="fa-solid fa-users me-2"></i>Users</a>
+        <a class="nav-link {% if request.endpoint and request.endpoint.startswith('admin.feedback') %}active{% endif %}" href="{{ url_for('admin.feedback') }}"><i class="fa-solid fa-comment-dots me-2"></i>Feedback</a>
+        <a class="nav-link {% if request.endpoint and request.endpoint.startswith('admin.steam_import') %}active{% endif %}" href="{{ url_for('admin.steam_import') }}"><i class="fa-brands fa-steam me-2"></i>Steam Catalog</a>
+        <hr style="border-color:var(--glass-border)">
+        <a class="nav-link" href="{{ url_for('main.home') }}"><i class="fa-solid fa-arrow-left me-2"></i>Back to Site</a>
+      </nav>
+    </div>
+  </div>
+  <div class="col-md-9 col-lg-10">
+    {% block admin_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}GameVault — Compare Game Prices & Track the Best Deals{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero-section mb-5 fade-in">
+  <div class="row align-items-center position-relative">
+    <div class="col-lg-7">
+      <span class="hero-badge mb-3 d-inline-block"><i class="fa-solid fa-bolt me-1"></i>LIVE DEAL TRACKING</span>
+      <h1 class="hero-title mt-3 mb-3">
+        Compare. Track. <span class="brand-logo">Save Big.</span>
+      </h1>
+      <p class="text-muted fs-5 mb-4">
+        GameVault scans Steam, Epic, GOG, Ubisoft Connect, Xbox and PlayStation stores in real time
+        so you always buy games at the lowest possible price.
+      </p>
+
+      {% if featured_deal %}
+      <div class="glass p-3 d-inline-flex align-items-center gap-3 mb-4">
+        <img loading="lazy" src="{{ featured_deal.game.cover_image }}" style="width:56px;height:76px;object-fit:cover;border-radius:8px;">
+        <div>
+          <div class="fw-semibold">{{ featured_deal.game.title }}</div>
+          <div class="hero-price-tag">
+            <span class="old">{{ featured_deal.game.best_price.original_price|official_price(featured_deal.game.best_price.price_currency) if featured_deal.game.best_price and featured_deal.game.best_price.original_price else '' }}</span>
+            <span class="new">-{{ featured_deal.discount_percent }}%</span>
+          </div>
+        </div>
+        <a href="{{ url_for('main.game_details', slug=featured_deal.game.slug) }}" class="btn btn-neon btn-sm ms-2">View Deal</a>
+      </div>
+      {% endif %}
+
+      <div class="d-flex gap-3">
+        <a href="{{ url_for('main.compare') }}" class="btn btn-neon btn-lg"><i class="fa-solid fa-scale-balanced me-1"></i>Compare Prices</a>
+        <a href="{{ url_for('deals.index') }}" class="btn btn-outline-neon btn-lg">Browse Deals</a>
+      </div>
+    </div>
+    <div class="col-lg-5 d-none d-lg-block text-center position-relative">
+      <i class="fa-solid fa-crosshairs" style="font-size:14rem; color:rgba(0,245,255,0.12);"></i>
+    </div>
+  </div>
+</section>
+
+<!-- TRENDING CAROUSEL -->
+<section class="mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="section-title">Trending Games</h2>
+    <a href="{{ url_for('main.compare') }}" class="text-decoration-none small">See all <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+  <div id="trendingCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      {% for chunk in trending|batch(4) %}
+      <div class="carousel-item {% if loop.first %}active{% endif %}">
+        <div class="row g-3">
+          {% for game in chunk %}
+          <div class="col-6 col-md-3">
+            {% include "partials/_game_card.html" %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if trending|length > 4 %}
+    <button class="carousel-control-prev" type="button" data-bs-target="#trendingCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#trendingCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+    {% endif %}
+  </div>
+</section>
+
+<!-- BIGGEST DISCOUNTS -->
+<section class="mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="section-title">Biggest Discounts</h2>
+    <a href="{{ url_for('deals.index', type='biggest') }}" class="text-decoration-none small">See all <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+  <div class="row g-3">
+    {% for game, listing in biggest_discounts %}
+    <div class="col-6 col-md-3">
+      <div class="game-card fade-in">
+        <div class="cover-wrap">
+          <span class="discount-badge">-{{ listing.discount_percent }}%</span>
+          <a href="{{ url_for('main.game_details', slug=game.slug) }}"><img loading="lazy" src="{{ game.cover_image }}" alt="{{ game.title }}"></a>
+        </div>
+        <div class="p-3">
+          <div class="fw-semibold text-truncate">{{ game.title }}</div>
+          <div class="d-flex align-items-baseline gap-2 mt-1">
+            <span class="text-muted text-decoration-line-through small">{{ listing.original_price|currency(listing.price_currency) }}</span>
+            <span class="fw-bold" style="color:var(--neon-lime)">{{ listing.current_price|currency(listing.price_currency) }}</span>
+          </div>
+          <div class="small text-muted mt-1">{{ listing.platform.name }}</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- FREE GAMES -->
+<section class="mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="section-title">Free Right Now</h2>
+    <a href="{{ url_for('deals.free_games') }}" class="text-decoration-none small">See all <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+  <div class="row g-3">
+    {% for game in free_games %}
+    <div class="col-6 col-md-2">
+      {% include "partials/_game_card.html" %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- TOP RATED -->
+<section class="mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="section-title">Top Rated</h2>
+  </div>
+  <div class="row g-3">
+    {% for game in top_rated %}
+    <div class="col-6 col-md-3">
+      {% include "partials/_game_card.html" %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- NEWSLETTER BANNER -->
+<section class="glass p-5 text-center mb-5">
+  <h3 class="fw-bold mb-2">Never miss a deal again</h3>
+  <p class="text-muted mb-4">Join 40,000+ gamers getting the best price drops delivered weekly.</p>
+  <form class="d-flex justify-content-center gap-2" style="max-width:480px;margin:0 auto;"
+        onsubmit="event.preventDefault(); showToast('Subscribed! Check your inbox for confirmation.', 'success');">
+    <input type="email" required class="form-control form-control-gv" placeholder="you@example.com">
+    <button class="btn btn-neon px-4">Subscribe</button>
+  </form>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="mb-4">
+  <h2 class="section-title mb-3">What Gamers Say</h2>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="glass testimonial-card">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="testimonial-avatar">A</div>
+          <div><div class="fw-semibold">Arjun R.</div><div class="rating-stars">★★★★★</div></div>
+        </div>
+        <p class="text-muted small mb-0">"Saved me ₹3000 on a AAA title I'd been eyeing for months. The price alerts actually work!"</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="glass testimonial-card">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="testimonial-avatar">M</div>
+          <div><div class="fw-semibold">Meera K.</div><div class="rating-stars">★★★★★</div></div>
+        </div>
+        <p class="text-muted small mb-0">"The comparison table is so clean. I check GameVault before buying anything now."</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="glass testimonial-card">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="testimonial-avatar">D</div>
+          <div><div class="fw-semibold">Dev S.</div><div class="rating-stars">★★★★☆</div></div>
+        </div>
+        <p class="text-muted small mb-0">"Found three free-to-keep Epic giveaways I would've completely missed."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Deals & Discounts — GameVault{% endblock %}
+
+{% block content %}
+<h1 class="section-title mb-4">Deals &amp; Discounts</h1>
+
+<ul class="nav nav-pills mb-4 gap-2">
+  <li class="nav-item"><a class="nav-link {% if filter_type=='all' %}btn-neon{% else %}btn-outline-neon{% endif %}"
+      href="{{ url_for('deals.index', type='all') }}">All Deals</a></li>
+  <li class="nav-item"><a class="nav-link {% if filter_type=='biggest' %}btn-neon{% else %}btn-outline-neon{% endif %}"
+      href="{{ url_for('deals.index', type='biggest') }}">Biggest Discounts</a></li>
+  <li class="nav-item"><a class="nav-link {% if filter_type=='trending' %}btn-neon{% else %}btn-outline-neon{% endif %}"
+      href="{{ url_for('deals.index', type='trending') }}">Trending</a></li>
+  <li class="nav-item"><a class="nav-link {% if filter_type=='new' %}btn-neon{% else %}btn-outline-neon{% endif %}"
+      href="{{ url_for('deals.index', type='new') }}">Newly Added</a></li>
+  <li class="nav-item"><a class="nav-link {% if filter_type=='limited' %}btn-neon{% else %}btn-outline-neon{% endif %}"
+      href="{{ url_for('deals.index', type='limited') }}">Limited-Time</a></li>
+</ul>
+
+<div class="row g-3">
+  {% for deal in deals %}
+  <div class="col-md-6 col-lg-4">
+    <div class="glass p-3 h-100 d-flex flex-column">
+      <div class="d-flex gap-3">
+        <img loading="lazy" src="{{ deal.game.cover_image }}"
+          style="width:70px;height:94px;object-fit:cover;border-radius:8px;">
+        <div class="flex-grow-1">
+          <div class="fw-semibold">{{ deal.game.title }}</div>
+          <div class="small text-muted mb-1">{{ deal.platform.name }}</div>
+          <span class="badge badge-soft-magenta">-{{ deal.discount_percent }}%</span>
+          {% if deal.is_featured %}<span class="badge badge-soft-lime ms-1">Featured</span>{% endif %}
+        </div>
+      </div>
+
+      {% if deal.expires_at %}
+      <div class="mt-3">
+        <div class="small text-muted mb-1"><i class="fa-regular fa-clock me-1"></i>Ends in:</div>
+        <div class="countdown-box" data-countdown="{{ deal.expires_at.isoformat() }}Z"></div>
+      </div>
+      {% endif %}
+
+      <div class="mt-3 d-flex gap-2">
+        <a href="{{ url_for('main.game_details', slug=deal.game.slug) }}"
+          class="btn btn-outline-neon btn-sm flex-grow-1">View Deal</a>
+        <button class="btn btn-neon btn-sm wishlist-heart" data-game-id="{{ deal.game.id }}"><i
+            class="fa-solid fa-heart"></i></button>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted text-center py-5">No deals in this category right now — check back soon!</p>
+  {% endfor %}
+</div>
+
+{% endblock %}
+<!-- Embedded Assistant UI -->
+<div id="ai-chat-box"
+  style="position: fixed; bottom: 20px; right: 20px; width: 300px; background: #222; color: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000;">
+  <h4 style="margin-top: 0;">Deal Assistant 🎮</h4>
+  <div id="chat-logs"
+    style="height: 180px; overflow-y: auto; font-size: 0.9em; margin-bottom: 10px; border-bottom: 1px solid #444;">
+  </div>
+  <div style="display: flex; gap: 5px;">
+    <input type="text" id="chat-input" placeholder="Ask about deals..."
+      style="flex: 1; padding: 6px; border-radius: 4px; border: none;">
+    <button onclick="sendMessage()"
+      style="padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Send</button>
+  </div>
+</div>
+
+<script>
+  async function sendMessage() {
+    const input = document.getElementById("chat-input");
+    const logs = document.getElementById("chat-logs");
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    logs.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+    input.value = "";
+
+    try {
+      const res = await fetch("/api/assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message })
+      });
+      const data = await res.json();
+
+      if (data.reply) {
+        logs.innerHTML += `<div><strong>Bot:</strong> ${data.reply}</div>`;
+      } else {
+        logs.innerHTML += `<div style="color: red;"><strong>Error:</strong> ${data.error}</div>`;
+      }
+    } catch (err) {
+      logs.innerHTML += `<div style="color: red;"><strong>Error:</strong> Request failed</div>`;
+    }
+    logs.scrollTop = logs.scrollHeight;
+  }
+</script>

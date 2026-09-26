@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found — GameVault{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="fw-bold" style="font-size:5rem;" class="brand-logo">404</h1>
+  <p class="text-muted fs-5">This page seems to have been discounted into oblivion.</p>
+  <a href="{{ url_for('main.home') }}" class="btn btn-neon mt-3">Back to Home</a>
+</div>
+{% endblock %}

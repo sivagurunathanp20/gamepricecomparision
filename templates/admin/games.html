@@ -1,0 +1,31 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Manage Games — GameVault Admin{% endblock %}
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="section-title mb-0">Manage Games</h2>
+  <a href="{{ url_for('admin.game_new') }}" class="btn btn-neon"><i class="fa-solid fa-plus me-1"></i>Add Game</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table compare-table">
+    <thead><tr><th>Cover</th><th>Title</th><th>Category</th><th>Rating</th><th>Free?</th><th></th></tr></thead>
+    <tbody>
+      {% for game in games %}
+      <tr>
+        <td><img loading="lazy" src="{{ game.cover_image }}" style="width:36px;height:48px;object-fit:cover;border-radius:6px;"></td>
+        <td>{{ game.title }}</td>
+        <td>{{ game.category.name if game.category else '-' }}</td>
+        <td class="rating-stars">★ {{ '%.1f'|format(game.rating) }}</td>
+        <td>{% if game.is_free_to_play %}<span class="badge badge-soft-lime">Free</span>{% else %}-{% endif %}</td>
+        <td class="d-flex gap-2">
+          <a href="{{ url_for('admin.game_edit', game_id=game.id) }}" class="btn btn-outline-neon btn-sm">Edit</a>
+          <form method="post" action="{{ url_for('admin.game_delete', game_id=game.id) }}" onsubmit="return confirm('Delete {{ game.title }}?');">
+            <button class="btn btn-sm btn-outline-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

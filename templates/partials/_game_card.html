@@ -1,0 +1,56 @@
+{# Card shows the cheapest OFFICIALLY VERIFIED offer. If nothing is verified the price is never guessed. #}
+{% set offer = game.best_offer %}
+{% set listing = offer[0] if offer else none %}
+{% set ed = offer[1] if offer else none %}
+<div class="game-card fade-in">
+  <div class="cover-wrap">
+    {% if (ed and ed.current_price == 0) or game.is_free_to_play %}
+      <span class="free-badge">FREE</span>
+    {% elif ed and ed.discount_percent %}
+      <span class="discount-badge">-{{ ed.discount_percent }}%</span>
+    {% endif %}
+    <div class="wishlist-heart" data-game-id="{{ game.id }}" title="Add to wishlist">
+      <i class="fa-solid fa-heart"></i>
+    </div>
+    <a href="{{ url_for('main.game_details', slug=game.slug) }}">
+      <img loading="lazy" src="{{ game.cover_image }}" alt="{{ game.title }}">
+    </a>
+  </div>
+  <div class="p-3">
+    <div class="fw-semibold text-truncate" title="{{ game.title }}">{{ game.title }}</div>
+    <div class="d-flex flex-wrap gap-1 mt-2">
+      {% if game.category %}<span class="platform-chip">{{ game.category.name }}</span>{% endif %}
+      {% if game.metacritic_score %}<span class="metacritic-chip metacritic-{{ 'high' if game.metacritic_score >= 75 else 'mid' if game.metacritic_score >= 50 else 'low' }}">{{ game.metacritic_score }}</span>{% endif %}
+    </div>
+
+    {% if ed %}
+    <div class="offer-meta mt-2">
+      <span class="platform-chip"><span class="store-dot" style="background:{{ listing.platform.brand_color }}"></span>{{ listing.platform.name }}</span>
+      <span class="edition-label" title="{{ ed.name }}">{{ ed.name }}</span>
+    </div>
+    <div class="mt-1">
+      {% if ed.discount_percent %}
+        <span class="text-muted text-decoration-line-through small">{{ ed.original_price|official_price(ed.currency) }}</span>
+      {% endif %}
+      <span class="fw-bold price-now">{{ ed.current_price|official_price(ed.currency) }}</span>
+    </div>
+    <div class="verified-line" title="Read from {{ listing.platform.name }} at {{ ed.last_verified_at.strftime('%d %b %Y %H:%M') }} UTC">
+      <i class="fa-solid fa-circle-check"></i> Verified {{ ed.last_verified_at|time_ago }}
+    </div>
+    <a href="{{ ed.purchase_url }}" class="btn btn-neon w-100 mt-2 buy-btn" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-cart-shopping me-1"></i>Buy Now on {{ listing.platform.name }}
+    </a>
+    {% if game.verified_store_count > 1 or game.verified_offers|length > 1 %}
+      <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="small d-block text-center mt-1">All stores &amp; editions</a>
+    {% endif %}
+    {% elif game.is_free_to_play %}
+    <div class="mt-2"><span class="fw-bold price-now">Free</span></div>
+    <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="btn btn-neon w-100 mt-2">
+      <i class="fa-solid fa-cart-shopping me-1"></i>Play Now
+    </a>
+    {% else %}
+    <div class="price-unverified mt-2"><i class="fa-solid fa-triangle-exclamation me-1"></i>Unable to verify price</div>
+    <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="btn btn-outline-neon w-100 mt-2">View details</a>
+    {% endif %}
+  </div>
+</div>

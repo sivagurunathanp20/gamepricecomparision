@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}{{ game.title }} — GameVault{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="glass p-3">
+      <img loading="lazy" src="{{ game.cover_image }}" class="w-100 rounded mb-3" style="aspect-ratio:5/4;object-fit:cover;">
+      <h2 class="fw-bold">{{ game.title }}</h2>
+      <div class="rating-stars mb-2">★★★★★ <span class="text-muted small">{{ '%.1f'|format(game.rating) }}/5</span></div>
+      <p class="small text-muted mb-1"><strong>Developer:</strong> {{ game.developer }}</p>
+      <p class="small text-muted mb-1"><strong>Publisher:</strong> {{ game.publisher }}</p>
+      <p class="small text-muted mb-1"><strong>Release:</strong> {{ game.release_date.strftime('%d %b %Y') if game.release_date else '-' }}</p>
+      {% if game.category %}<span class="platform-chip">{{ game.category.name }}</span>{% endif %}
+
+      <button class="btn btn-neon w-100 mt-3 wishlist-heart" data-game-id="{{ game.id }}">
+        <i class="fa-solid fa-heart me-1"></i>Add to Wishlist
+      </button>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="glass p-4 mb-4">
+      <h5 class="mb-3">About</h5>
+      <p class="text-muted">{{ game.description }}</p>
+    </div>
+
+    <div class="glass p-4 mb-4">
+      <h5 class="mb-1">Official Prices &amp; Editions</h5>
+      <p class="small text-muted mb-3">Read directly from each official store. Buy buttons open the exact product page.</p>
+
+      {% for listing in game.sorted_listings if listing.store_product_id or listing.editions %}
+      {% set trusted = listing.price_is_trusted %}
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-1 mb-2">
+          <span class="platform-chip"><span class="store-dot" style="background:{{ listing.platform.brand_color }}"></span>{{ listing.platform.name }}</span>
+          {% if trusted %}
+            <span class="verified-line mt-0"><i class="fa-solid fa-circle-check"></i> Verified {{ listing.last_verified_at|time_ago }} ({{ listing.last_verified_at.strftime('%d %b %Y, %H:%M') }} UTC)</span>
+          {% else %}
+            <span class="price-unverified small"><i class="fa-solid fa-triangle-exclamation me-1"></i>Unable to verify price{% if listing.verify_error %} — {{ listing.verify_error }}{% endif %}</span>
+          {% endif %}
+        </div>
+        <div class="table-responsive">
+          <table class="table compare-table edition-table mb-0">
+            <thead><tr><th>Edition</th><th>Original</th><th>Price</th><th>Discount</th><th></th></tr></thead>
+            <tbody>
+              {% for ed in listing.editions if ed.is_available %}
+              <tr {% if game.best_offer and game.best_offer[1].id == ed.id %}style="outline:1px solid var(--neon-lime);"{% endif %}>
+                <td>{{ ed.name }}{% if game.best_offer and game.best_offer[1].id == ed.id %} <span class="badge badge-soft-lime ms-1"><i class="fa-solid fa-star me-1"></i>Lowest</span>{% endif %}</td>
+                {% if ed.price_is_trusted %}
+                  <td class="text-muted">{% if ed.discount_percent %}<span class="text-decoration-line-through">{{ ed.original_price|official_price(ed.currency) }}</span>{% else %}—{% endif %}</td>
+                  <td class="fw-bold price-now">{{ ed.current_price|official_price(ed.currency) }}</td>
+                  <td>{% if ed.discount_percent %}<span class="badge badge-soft-magenta">-{{ ed.discount_percent }}%</span>{% else %}—{% endif %}</td>
+                  <td><a href="{{ ed.purchase_url }}" class="btn btn-neon btn-sm buy-btn" target="_blank" rel="noopener noreferrer">Buy on {{ listing.platform.name }}</a></td>
+                {% else %}
+                  <td class="price-unverified" colspan="3">Unable to verify price</td>
+                  <td>{% if ed.link_is_verified %}<a href="{{ ed.purchase_url }}" class="btn btn-outline-neon btn-sm" target="_blank" rel="noopener noreferrer">View on {{ listing.platform.name }}</a>{% endif %}</td>
+                {% endif %}
+              </tr>
+              {% else %}
+              <tr><td colspan="5" class="price-unverified">No verified edition for this store right now.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="text-center py-4">
+        <i class="fa-solid fa-store-slash fa-2x text-muted mb-2 d-block"></i>
+        <span class="text-muted">No official store listing has been verified for this game yet.</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="glass p-4 mb-4">
+      <h5 class="mb-1">Compare Prices Across Stores</h5>
+      <p class="small text-muted mb-3">Aggregated from multiple storefronts — not individually re-verified like the official prices above. Buy takes you straight to that store's listing for this game.</p>
+      {% if store_comparisons %}
+      <div class="table-responsive">
+        <table class="table compare-table mb-0">
+          <thead><tr><th>Store</th><th>Original</th><th>Price</th><th>Discount</th><th></th></tr></thead>
+          <tbody>
+            {% for c in store_comparisons %}
+            <tr {% if loop.first %}style="outline:1px solid var(--neon-lime);"{% endif %}>
+              <td><span class="platform-chip"><span class="store-dot" style="background:{{ c.color }}"></span>{{ c.shop }}</span>{% if loop.first %} <span class="badge badge-soft-lime ms-1"><i class="fa-solid fa-star me-1"></i>Lowest</span>{% endif %}</td>
+              <td class="text-muted">{% if c.discount_percent %}<span class="text-decoration-line-through">{{ c.original_price|currency('USD') }}</span>{% else %}—{% endif %}</td>
+              <td class="fw-bold price-now">{{ c.current_price|currency('USD') }}</td>
+              <td>{% if c.discount_percent %}<span class="badge badge-soft-magenta">-{{ c.discount_percent }}%</span>{% else %}—{% endif %}</td>
+              <td><a href="{{ c.store_url }}" class="btn btn-neon btn-sm buy-btn" target="_blank" rel="noopener noreferrer">Buy on {{ c.shop }}</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-3">
+        <i class="fa-solid fa-store-slash fa-2x text-muted mb-2 d-block"></i>
+        <span class="text-muted">No cross-store listings found for this game right now.</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="glass p-4 mb-4">
+      <h5 class="mb-3">Verified Price History</h5>
+      {% if chart_prices|length < 2 %}<p class="text-muted small mb-0">Not enough verified price history yet — points are recorded each time the official price is checked.</p>{% endif %}
+      <canvas id="priceHistoryChart" height="90" {% if chart_prices|length < 2 %}style="display:none"{% endif %}></canvas>
+    </div>
+
+    <div class="glass p-4 mb-4">
+      <h5 class="mb-3">Player Reviews</h5>
+      {% for review in reviews %}
+      <div class="border-bottom pb-2 mb-2" style="border-color:var(--glass-border) !important;">
+        <div class="d-flex justify-content-between">
+          <span class="fw-semibold">{{ review.user.username }}</span>
+          <span class="rating-stars">{{ '★' * review.rating }}{{ '☆' * (5 - review.rating) }}</span>
+        </div>
+        <p class="small text-muted mb-0">{{ review.comment }}</p>
+      </div>
+      {% else %}
+      <p class="text-muted small mb-0">No reviews yet — be the first to share your thoughts.</p>
+      {% endfor %}
+    </div>
+
+    {% if similar_games %}
+    <h5 class="mb-3">You Might Also Like</h5>
+    <div class="row g-3">
+      {% for game in similar_games %}
+      <div class="col-6 col-md-3">{% include "partials/_game_card.html" %}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const ctx = document.getElementById('priceHistoryChart');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ chart_labels|tojson }},
+      datasets: [{
+        label: 'Official price ({{ chart_currency }})',
+        data: {{ chart_prices|tojson }},
+        borderColor: '#00f5ff',
+        backgroundColor: 'rgba(0,245,255,0.12)',
+        tension: 0.3,
+        fill: true,
+        pointRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#93a1b8' } } },
+      scales: {
+        x: { ticks: { color: '#93a1b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#93a1b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+</script>
+{% endblock %}

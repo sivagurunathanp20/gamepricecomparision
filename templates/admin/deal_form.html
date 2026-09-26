@@ -1,0 +1,47 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Add Deal — GameVault Admin{% endblock %}
+{% block admin_content %}
+<h2 class="section-title mb-4">Add Deal</h2>
+<div class="glass p-4">
+  <form method="post" class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label small text-muted">Game</label>
+      <select name="game_id" required class="form-select form-select-gv">
+        {% for g in games %}<option value="{{ g.id }}">{{ g.title }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label small text-muted">Platform</label>
+      <select name="platform_id" required class="form-select form-select-gv">
+        {% for p in platforms %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small text-muted">Deal Type</label>
+      <select name="deal_type" class="form-select form-select-gv">
+        <option value="discount">Discount</option>
+        <option value="free">Free to Keep</option>
+        <option value="giveaway">Giveaway</option>
+        <option value="weekend_ftp">Free Weekend</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small text-muted">Discount %</label>
+      <input type="number" name="discount_percent" min="0" max="100" value="0" class="form-control form-control-gv">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small text-muted">Expires At</label>
+      <input type="datetime-local" name="expires_at" class="form-control form-control-gv">
+    </div>
+    <div class="col-12">
+      <div class="form-check">
+        <input type="checkbox" name="is_featured" class="form-check-input" id="featuredCheck">
+        <label class="form-check-label" for="featuredCheck">Feature this deal on homepage</label>
+      </div>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-neon">Create Deal</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}GameVault — Compare Prices & Track Deals{% endblock %}</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_css %}{% endblock %}
+</head>
+<body style="font-family:'Poppins',sans-serif;">
+
+<nav class="navbar navbar-expand-lg navbar-gv py-3">
+  <div class="container">
+    <a class="navbar-brand brand-logo" href="{{ url_for('main.home') }}">
+      <i class="fa-solid fa-gamepad me-1"></i>GameVault
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item"><a class="nav-link nav-link-gv {% if request.endpoint=='main.home' %}active{% endif %}" href="{{ url_for('main.home') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-gv {% if request.endpoint=='main.compare' %}active{% endif %}" href="{{ url_for('main.compare') }}">Compare</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-gv {% if request.endpoint=='deals.index' %}active{% endif %}" href="{{ url_for('deals.index') }}">Deals</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-gv {% if request.endpoint=='deals.free_games' %}active{% endif %}" href="{{ url_for('deals.free_games') }}">Free Games</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-gv {% if request.endpoint=='main.feedback' %}active{% endif %}" href="{{ url_for('main.feedback') }}">Feedback</a></li>
+        {% if current_user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link nav-link-gv {% if request.endpoint=='wishlist.index' %}active{% endif %}" href="{{ url_for('wishlist.index') }}">Wishlist</a></li>
+        {% endif %}
+      </ul>
+
+      <div class="d-flex align-items-center gap-2 position-relative">
+        <div class="position-relative">
+          <input type="text" id="navSearchInput" class="form-control form-control-gv" placeholder="Search games..." style="width:100%;max-width:220px;min-width:120px;" autocomplete="off">
+          <div id="navSearchResults" class="glass d-none"></div>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-neon dropdown-toggle" data-bs-toggle="dropdown" title="Change currency">
+            {{ supported_currencies.get(current_currency, {}).get('symbol', current_currency) }} {{ current_currency }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end glass border-0 mt-2">
+            {% for code, info in supported_currencies.items() %}
+            <li>
+              <form action="{{ url_for('set_currency', code=code) }}" method="post" class="m-0">
+                <button type="submit" class="dropdown-item {% if code == current_currency %}active{% endif %}">
+                  {{ info.symbol }} {{ code }} — {{ info.label }}
+                </button>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle theme">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+
+        {% if current_user.is_authenticated %}
+          <div class="dropdown">
+            <button class="btn btn-outline-neon dropdown-toggle" data-bs-toggle="dropdown">
+              <i class="fa-solid fa-user me-1"></i>{{ current_user.username }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end glass border-0 mt-2">
+              <li><a class="dropdown-item" href="{{ url_for('main.dashboard') }}"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}"><i class="fa-solid fa-gear me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('wishlist.index') }}"><i class="fa-solid fa-heart me-2"></i>Wishlist</a></li>
+              {% if current_user.is_admin %}
+              <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fa-solid fa-shield-halved me-2"></i>Admin Panel</a></li>
+              {% endif %}
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-neon">Login</a>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-neon">Sign Up</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="toast align-items-center text-bg-{{ 'danger' if category=='danger' else ('success' if category=='success' else ('warning' if category=='warning' else 'dark')) }} border-0 show mb-2" role="alert">
+        <div class="d-flex">
+          <div class="toast-body">{{ message }}</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <div id="jsToastArea"></div>
+</div>
+
+<main class="container py-4">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer-gv py-5 mt-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h5 class="brand-logo">GameVault</h5>
+        <p class="text-muted small">Compare prices across every major storefront and never miss a deal again.</p>
+        <div class="d-flex gap-3 fs-5">
+          <a href="#" class="text-muted"><i class="fa-brands fa-discord"></i></a>
+          <a href="#" class="text-muted"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" class="text-muted"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" class="text-muted"><i class="fa-brands fa-twitch"></i></a>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <h6>Explore</h6>
+        <ul class="list-unstyled small">
+          <li><a href="{{ url_for('main.compare') }}" class="text-muted">Compare Games</a></li>
+          <li><a href="{{ url_for('deals.index') }}" class="text-muted">Deals</a></li>
+          <li><a href="{{ url_for('deals.free_games') }}" class="text-muted">Free Games</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        <h6>Account</h6>
+        <ul class="list-unstyled small">
+          <li><a href="{{ url_for('auth.login') }}" class="text-muted">Login</a></li>
+          <li><a href="{{ url_for('auth.register') }}" class="text-muted">Register</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h6>Newsletter</h6>
+        <p class="text-muted small">Get the biggest deals dropped straight into your inbox, weekly.</p>
+        <form class="d-flex gap-2" onsubmit="event.preventDefault(); showToast('Subscribed! Check your inbox for confirmation.', 'success');">
+          <input type="email" required class="form-control form-control-gv" placeholder="you@example.com">
+          <button class="btn btn-neon">Join</button>
+        </form>
+      </div>
+    </div>
+    <hr class="border-secondary mt-4">
+    <p class="text-muted small text-center mb-0">&copy; {{ now.year }} GameVault. Built as a final-year academic project — not affiliated with Steam, Epic, GOG, Xbox, or PlayStation.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_js %}{% endblock %}
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  VAULT — Floating Chatbot Widget     ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+
+<!-- FAB trigger button -->
+<button id="gvChatFab" aria-label="Open Vault assistant">
+  <i class="fa-solid fa-robot"></i>
+</button>
+
+<!-- Chat panel -->
+<div id="gvChatPanel" role="dialog" aria-label="Vault chat assistant">
+
+  <!-- Header -->
+  <div class="gv-chat-header">
+    <div class="gv-chat-avatar">
+      <i class="fa-solid fa-robot"></i>
+    </div>
+    <div class="gv-chat-title">
+      <strong>Vault</strong>
+      <span>Online — ready to help</span>
+    </div>
+    <button id="gvChatClose" class="gv-chat-close" aria-label="Close chat">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="gvChatMessages" aria-live="polite"></div>
+
+  <!-- Input bar -->
+  <div class="gv-chat-footer">
+    <input
+      id="gvChatInput"
+      type="text"
+      placeholder="Ask about deals, free games…"
+      autocomplete="off"
+      maxlength="200"
+    >
+    <button id="gvChatSend" aria-label="Send message">
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
+  </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+</body>
+</html>

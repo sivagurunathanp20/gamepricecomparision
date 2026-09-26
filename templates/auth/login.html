@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Login — GameVault{% endblock %}
+{% block content %}
+<div class="glass auth-card fade-in">
+  <h2 class="fw-bold text-center mb-1">Welcome Back</h2>
+  <p class="text-muted text-center mb-4">Log in to track deals and manage your wishlist.</p>
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label small text-muted">Email</label>
+      <input type="email" name="email" required class="form-control form-control-gv" placeholder="you@example.com">
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Password</label>
+      <input type="password" name="password" required class="form-control form-control-gv" placeholder="••••••••">
+    </div>
+    <div class="form-check mb-3">
+      <input type="checkbox" name="remember" class="form-check-input" id="rememberMe">
+      <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+    </div>
+    <button class="btn btn-neon w-100 mb-3">Login</button>
+    <p class="text-center small text-muted mb-0">Don't have an account? <a href="{{ url_for('auth.register') }}">Sign up</a></p>
+  </form>
+
+  {% set google_button_label = "Sign in with Google" %}
+  {% include "auth/_google_button.html" %}
+
+  <div class="text-center small text-muted mt-3 pt-3 border-top" style="border-color:var(--glass-border) !important;">
+    Demo admin: admin@gamevault.com / Admin@123<br>Demo user: demo@gamevault.com / Demo@123
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Admin Analytics — GameVault{% endblock %}
+{% block admin_content %}
+<h2 class="section-title mb-4">Analytics Overview</h2>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="glass stat-card text-center"><div class="value" style="color:var(--neon-cyan)">{{ stats.total_games }}</div><div class="text-muted small">Total Games</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="glass stat-card text-center"><div class="value" style="color:var(--neon-violet)">{{ stats.total_users }}</div><div class="text-muted small">Total Users</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="glass stat-card text-center"><div class="value" style="color:var(--neon-magenta)">{{ stats.total_deals }}</div><div class="text-muted small">Total Deals</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="glass stat-card text-center"><div class="value" style="color:var(--neon-lime)">{{ stats.active_deals }}</div><div class="text-muted small">Active Deals</div></div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="glass p-4">
+      <h6 class="mb-3">User Signups</h6>
+      <canvas id="signupChart" height="180"></canvas>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="glass p-4">
+      <h6 class="mb-3">Top Games by Popularity</h6>
+      <canvas id="topGamesChart" height="180"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="glass p-4 mt-4">
+  <h6 class="mb-3">Recent Users</h6>
+  <table class="table compare-table">
+    <thead><tr><th>Username</th><th>Email</th><th>Joined</th></tr></thead>
+    <tbody>
+      {% for u in recent_users %}
+      <tr><td>{{ u.username }}</td><td>{{ u.email }}</td><td>{{ u.created_at.strftime('%d %b %Y') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+new Chart(document.getElementById('signupChart'), {
+  type: 'bar',
+  data: {
+    labels: {{ signup_trend|map(attribute=0)|list|tojson }},
+    datasets: [{ label: 'Signups', data: {{ signup_trend|map(attribute=1)|list|tojson }}, backgroundColor: '#00f5ff' }]
+  },
+  options: { plugins: { legend: { labels: { color: '#93a1b8' } } },
+    scales: { x: { ticks: { color: '#93a1b8' } }, y: { ticks: { color: '#93a1b8' } } } }
+});
+
+new Chart(document.getElementById('topGamesChart'), {
+  type: 'doughnut',
+  data: {
+    labels: {{ top_games|map(attribute='title')|list|tojson }},
+    datasets: [{ data: {{ top_games|map(attribute='popularity_score')|list|tojson }},
+      backgroundColor: ['#00f5ff','#8a5cff','#ff2ecf','#b6ff3c','#ff4d6d'] }]
+  },
+  options: { plugins: { legend: { labels: { color: '#93a1b8' } } } }
+});
+</script>
+{% endblock %}

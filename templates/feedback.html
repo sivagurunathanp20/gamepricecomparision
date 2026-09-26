@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Feedback — GameVault{% endblock %}
+{% block content %}
+<div class="glass auth-card fade-in" style="max-width:560px;">
+  <h2 class="fw-bold text-center mb-1">We'd Love Your Feedback</h2>
+  <p class="text-muted text-center mb-4">Found a bug? Have an idea? Think a price looks off? Let us know.</p>
+  <form method="post">
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Name</label>
+        <input type="text" name="name" required value="{{ current_user.username if current_user.is_authenticated else '' }}" class="form-control form-control-gv">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Email</label>
+        <input type="email" name="email" required value="{{ current_user.email if current_user.is_authenticated else '' }}" class="form-control form-control-gv">
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Category</label>
+      <select name="category" class="form-select form-select-gv">
+        <option value="general">General Feedback</option>
+        <option value="bug">Bug Report</option>
+        <option value="feature">Feature Request</option>
+        <option value="pricing">Pricing / Data Issue</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted d-block">How would you rate GameVault?</label>
+      <div class="d-flex gap-3">
+        {% for i in range(1, 6) %}
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="rating" id="star{{ i }}" value="{{ i }}" {% if i==5 %}checked{% endif %}>
+          <label class="form-check-label" for="star{{ i }}">{{ i }}★</label>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="mb-4">
+      <label class="form-label small text-muted">Your Message</label>
+      <textarea name="message" required rows="4" class="form-control form-control-gv" placeholder="Tell us what's on your mind..."></textarea>
+    </div>
+    <button class="btn btn-neon w-100">Submit Feedback</button>
+  </form>
+</div>
+{% endblock %}

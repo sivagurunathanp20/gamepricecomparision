@@ -1,0 +1,102 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Steam Catalog Import — GameVault Admin{% endblock %}
+{% block admin_content %}
+<h2 class="section-title mb-2"><i class="fa-brands fa-steam me-2"></i>Steam Catalog Import</h2>
+<p class="text-muted small mb-4">
+  Builds the largest practical catalog of real Steam games — pulls Steam's full app list,
+  then imports each one in the background with a polite delay between requests so it never
+  gets rate-limited. This is a genuine long-running job: Steam's catalog is ~260,000 entries,
+  so a full run can take several days of continuous background work, not minutes.
+</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="glass stat-card text-center"><div class="value" style="color:var(--neon-cyan)" id="statImported">{{ job.imported_count if job else 0 }}</div><div class="text-muted small">Imported</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="glass stat-card text-center"><div class="value" style="color:var(--neon-lime)" id="statPending">{{ pending_count }}</div><div class="text-muted small">Pending</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="glass stat-card text-center"><div class="value text-muted" id="statSkipped">{{ job.skipped_count if job else 0 }}</div><div class="text-muted small">Skipped (not a game)</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="glass stat-card text-center"><div class="value" style="color:var(--neon-magenta)" id="statFailed">{{ job.failed_count if job else 0 }}</div><div class="text-muted small">Failed</div></div>
+  </div>
+</div>
+
+<div class="glass p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h6 class="mb-0">Progress — status: <span id="jobStatus" class="badge badge-soft-cyan text-capitalize">{{ job.status if job else 'idle' }}</span></h6>
+    <div class="d-flex gap-2">
+      <form method="post" action="{{ url_for('admin.steam_import_start') }}">
+        <button class="btn btn-neon btn-sm"><i class="fa-solid fa-play me-1"></i>Start / Resume</button>
+      </form>
+      <form method="post" action="{{ url_for('admin.steam_import_pause') }}">
+        <button class="btn btn-outline-neon btn-sm"><i class="fa-solid fa-pause me-1"></i>Pause</button>
+      </form>
+    </div>
+  </div>
+  <div class="progress" style="height:10px;background:var(--bg-panel-2);">
+    <div class="progress-bar" id="progressBar" role="progressbar" style="width:0%;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-violet));"></div>
+  </div>
+  <p class="text-muted small mt-2 mb-0" id="jobMessage">{{ job.last_message if job else 'Not started yet.' }}</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="glass p-4">
+      <h6 class="mb-3">Import One Game by Steam App ID</h6>
+      <form method="post" action="{{ url_for('admin.steam_import_one') }}" class="d-flex gap-2">
+        <input type="number" name="steam_app_id" required class="form-control form-control-gv" placeholder="e.g. 1245620">
+        <button class="btn btn-neon">Import</button>
+      </form>
+      <p class="text-muted small mt-2 mb-0">Runs immediately (not queued) — good for adding one specific game right now.</p>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="glass p-4">
+      <h6 class="mb-3">Failed Imports</h6>
+      {% if recent_failures %}
+      <p class="text-muted small">{{ recent_failures|length }} shown (most recent). These are retried automatically up to 3 times before being marked failed.</p>
+      <form method="post" action="{{ url_for('admin.steam_import_retry_failed') }}">
+        <button class="btn btn-outline-neon btn-sm mb-2"><i class="fa-solid fa-rotate-right me-1"></i>Retry All Failed</button>
+      </form>
+      <div style="max-height:200px;overflow-y:auto;">
+        <table class="table compare-table table-sm">
+          <thead><tr><th>App ID</th><th>Error</th></tr></thead>
+          <tbody>
+            {% for row in recent_failures %}
+            <tr><td>{{ row.steam_app_id }}</td><td class="small text-muted">{{ row.last_error }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted small mb-0">No failed imports right now.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function pollImportStatus() {
+  fetch("{{ url_for('admin.steam_import_status') }}")
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('statImported').textContent = data.imported;
+      document.getElementById('statPending').textContent = data.pending;
+      document.getElementById('statSkipped').textContent = data.skipped;
+      document.getElementById('statFailed').textContent = data.failed;
+      document.getElementById('jobStatus').textContent = data.status;
+      document.getElementById('jobMessage').textContent = data.message || 'Not started yet.';
+      const pct = data.total > 0 ? Math.min(100, (data.processed / data.total) * 100) : 0;
+      document.getElementById('progressBar').style.width = pct + '%';
+    })
+    .catch(() => {});
+}
+pollImportStatus();
+setInterval(pollImportStatus, 4000);
+</script>
+{% endblock %}

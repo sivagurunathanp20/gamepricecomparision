@@ -1,0 +1,32 @@
+{% extends "admin/_layout.html" %}
+{% block title %}User Feedback — GameVault Admin{% endblock %}
+{% block admin_content %}
+<h2 class="section-title mb-4">User Feedback</h2>
+
+<div class="table-responsive">
+  <table class="table compare-table">
+    <thead><tr><th>Name</th><th>Category</th><th>Rating</th><th>Message</th><th>Date</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for fb in feedback_list %}
+      <tr>
+        <td>{{ fb.name }}<div class="small text-muted">{{ fb.email }}</div></td>
+        <td><span class="platform-chip">{{ fb.category }}</span></td>
+        <td class="rating-stars">{% if fb.rating %}{{ '★' * fb.rating }}{% else %}-{% endif %}</td>
+        <td style="max-width:320px;">{{ fb.message }}</td>
+        <td class="small text-muted">{{ fb.created_at.strftime('%d %b %Y') }}</td>
+        <td>{% if fb.is_reviewed %}<span class="badge badge-soft-lime">Reviewed</span>{% else %}<span class="badge badge-soft-magenta">New</span>{% endif %}</td>
+        <td>
+          {% if not fb.is_reviewed %}
+          <form method="post" action="{{ url_for('admin.feedback_mark_reviewed', feedback_id=fb.id) }}">
+            <button class="btn btn-outline-neon btn-sm">Mark Reviewed</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted py-4">No feedback submitted yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

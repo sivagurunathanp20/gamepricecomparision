@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}My Profile — GameVault{% endblock %}
+{% block content %}
+<div class="glass auth-card fade-in">
+  <h2 class="fw-bold text-center mb-4">My Profile</h2>
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label small text-muted">Username</label>
+      <input type="text" name="username" value="{{ current_user.username }}" class="form-control form-control-gv">
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Email</label>
+      <input type="email" value="{{ current_user.email }}" disabled class="form-control form-control-gv">
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Sign-in</label>
+      {% if current_user.google_id %}
+      <div class="d-flex align-items-center gap-2 small">
+        <i class="fa-brands fa-google"></i>
+        <span>Google account connected</span>
+        {% if not current_user.password_hash %}
+        <span class="text-muted">(Google only — no local password)</span>
+        {% endif %}
+      </div>
+      {% elif google_oauth_enabled %}
+      <a href="{{ url_for('auth.google_login') }}" class="btn btn-google w-100 d-flex align-items-center justify-content-center gap-2">
+        <i class="fa-brands fa-google"></i> Connect Google
+      </a>
+      {% else %}
+      <p class="small text-muted mb-0">Email and password</p>
+      {% endif %}
+    </div>
+    <div class="mb-4">
+      <label class="form-label small text-muted d-block">Theme Preference</label>
+      <div class="btn-group w-100" role="group">
+        <input type="radio" class="btn-check" name="theme_preference" id="themeDark" value="dark" {% if current_user.theme_preference=='dark' %}checked{% endif %}>
+        <label class="btn btn-outline-neon" for="themeDark"><i class="fa-solid fa-moon me-1"></i>Dark</label>
+
+        <input type="radio" class="btn-check" name="theme_preference" id="themeLight" value="light" {% if current_user.theme_preference=='light' %}checked{% endif %}>
+        <label class="btn btn-outline-neon" for="themeLight"><i class="fa-solid fa-sun me-1"></i>Light</label>
+      </div>
+    </div>
+    <button class="btn btn-neon w-100">Save Changes</button>
+  </form>
+</div>
+{% endblock %}

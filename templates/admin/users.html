@@ -1,0 +1,33 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Manage Users — GameVault Admin{% endblock %}
+{% block admin_content %}
+<h2 class="section-title mb-4">Manage Users</h2>
+
+<div class="table-responsive">
+  <table class="table compare-table">
+    <thead><tr><th>Username</th><th>Email</th><th>Admin?</th><th>Joined</th><th></th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{% if u.is_admin %}<span class="badge badge-soft-cyan">Admin</span>{% else %}-{% endif %}</td>
+        <td class="small text-muted">{{ u.created_at.strftime('%d %b %Y') }}</td>
+        <td class="d-flex gap-2">
+          {% if u.id != current_user.id %}
+          <form method="post" action="{{ url_for('admin.toggle_admin', user_id=u.id) }}">
+            <button class="btn btn-outline-neon btn-sm">{{ 'Revoke Admin' if u.is_admin else 'Make Admin' }}</button>
+          </form>
+          <form method="post" action="{{ url_for('admin.user_delete', user_id=u.id) }}" onsubmit="return confirm('Delete {{ u.username }}?');">
+            <button class="btn btn-outline-danger btn-sm">Delete</button>
+          </form>
+          {% else %}
+          <span class="small text-muted">You</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

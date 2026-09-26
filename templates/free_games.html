@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Free Games — GameVault{% endblock %}
+
+{% block content %}
+<h1 class="section-title mb-2">Free Games Right Now</h1>
+<p class="text-muted mb-4">Free Steam games, Epic Games giveaways, weekend free-to-play events, and permanently free titles — all in one place.</p>
+
+{# ── Section 1: Limited-time free offers ────────────────────────────── #}
+{% if free_deals %}
+<h2 class="h5 mb-3" style="color: var(--neon-cyan);">
+  <i class="fa-solid fa-fire me-2"></i>Limited-Time Free Offers
+</h2>
+<div class="row g-3 mb-5">
+  {% for deal in free_deals %}
+  <div class="col-md-6 col-lg-4">
+    <div class="glass p-3 h-100 d-flex flex-column">
+      <div class="d-flex gap-3">
+        <img loading="lazy" src="{{ deal.game.cover_image }}" style="width:70px;height:94px;object-fit:cover;border-radius:8px;">
+        <div class="flex-grow-1">
+          <div class="fw-semibold">{{ deal.game.title }}</div>
+          <div class="small text-muted mb-1">{{ deal.platform.name }}</div>
+          {% if deal.deal_type == 'free' %}
+            <span class="badge badge-soft-lime">Free to Keep</span>
+          {% elif deal.deal_type == 'giveaway' %}
+            <span class="badge badge-soft-cyan">Giveaway</span>
+          {% else %}
+            <span class="badge badge-soft-magenta">Free Weekend</span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if deal.expires_at %}
+      <div class="mt-3">
+        <div class="small text-muted mb-1"><i class="fa-regular fa-clock me-1"></i>Offer ends in:</div>
+        <div class="countdown-box" data-countdown="{{ deal.expires_at.isoformat() }}Z"></div>
+      </div>
+      {% endif %}
+
+      <div class="mt-3 d-flex gap-2">
+        <a href="{{ url_for('main.game_details', slug=deal.game.slug) }}" class="btn btn-neon btn-sm flex-grow-1">Claim / View</a>
+        <button class="btn btn-outline-neon btn-sm wishlist-heart" data-game-id="{{ deal.game.id }}"><i class="fa-solid fa-heart"></i></button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{# ── Section 2: Always free-to-play games ───────────────────────────── #}
+<h2 class="h5 mb-3" style="color: var(--neon-cyan);">
+  <i class="fa-solid fa-infinity me-2"></i>Always Free to Play
+</h2>
+<div class="row g-3">
+  {% for game in always_free_games %}
+  <div class="col-md-6 col-lg-4">
+    <div class="glass p-3 h-100 d-flex flex-column">
+      <div class="d-flex gap-3">
+        <img loading="lazy" src="{{ game.cover_image }}" style="width:70px;height:94px;object-fit:cover;border-radius:8px;">
+        <div class="flex-grow-1">
+          <div class="fw-semibold">{{ game.title }}</div>
+          <div class="small text-muted mb-1">
+            {% if game.best_price %}{{ game.best_price.platform.name }}{% endif %}
+          </div>
+          <span class="badge badge-soft-lime">Free to Play</span>
+          {% if game.steam_rating_percent %}
+            <span class="badge badge-soft-cyan ms-1">{{ game.steam_rating_percent }}% Positive</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="mt-auto pt-3 d-flex gap-2">
+        <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="btn btn-neon btn-sm flex-grow-1">Play Free</a>
+        <button class="btn btn-outline-neon btn-sm wishlist-heart" data-game-id="{{ game.id }}"><i class="fa-solid fa-heart"></i></button>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  {% if not free_deals %}
+  <p class="text-muted text-center py-5">No free games found right now — check back soon!</p>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}

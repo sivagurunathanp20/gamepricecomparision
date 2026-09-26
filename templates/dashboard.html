@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — GameVault{% endblock %}
+
+{% block content %}
+<h1 class="section-title mb-4">Welcome back, {{ current_user.username }}</h1>
+
+<div class="row g-3 mb-5">
+  <div class="col-md-3">
+    <div class="glass stat-card text-center">
+      <div class="value">{{ current_user.wishlist_items|length }}</div>
+      <div class="text-muted small">Wishlisted Games</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="glass stat-card text-center">
+      <div class="value">{{ current_user.reviews|length }}</div>
+      <div class="text-muted small">Reviews Written</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="glass stat-card text-center">
+      <div class="value">{{ current_user.notifications|length }}</div>
+      <div class="text-muted small">Notifications</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="glass stat-card text-center">
+      <div class="value text-capitalize">{{ current_user.theme_preference }}</div>
+      <div class="text-muted small">Theme Preference</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="section-title mb-0">Recently Viewed</h2>
+  <a href="{{ url_for('main.compare') }}" class="small text-decoration-none">Browse more <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+
+<div class="row g-3">
+  {% for game in recently_viewed %}
+  <div class="col-6 col-md-3">
+    {% include "partials/_game_card.html" %}
+  </div>
+  {% else %}
+  <p class="text-muted">You haven't viewed any games yet — head to the <a href="{{ url_for('main.compare') }}">comparison page</a> to explore.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}Compare Game Prices — GameVault{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <h1 class="section-title mb-0">Compare Game Prices</h1>
+  <div class="view-toggle" id="gvViewToggle" role="group" aria-label="Switch display">
+    <button type="button" id="gvViewGrid" data-view="grid"><i class="fa-solid fa-grip me-1"></i>Grid</button>
+    <button type="button" id="gvViewTable" data-view="table"><i class="fa-solid fa-table-list me-1"></i>Table</button>
+  </div>
+</div>
+
+<form method="get" class="glass p-3 mb-4 row g-2 align-items-center">
+  <div class="col-md-4">
+    <input type="text" name="q" value="{{ search }}" class="form-control form-control-gv"
+      placeholder="Search by title...">
+  </div>
+  <div class="col-md-2">
+    <select name="genre" class="form-select form-select-gv">
+      <option value="">All Genres</option>
+      {% for cat in categories %}
+      <option value="{{ cat.slug }}" {% if selected_genre==cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select name="platform" class="form-select form-select-gv">
+      <option value="">All Platforms</option>
+      {% for p in platforms %}
+      <option value="{{ p.name }}" {% if selected_platform==p.name %}selected{% endif %}>{{ p.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select name="sort" class="form-select form-select-gv">
+      <option value="popularity" {% if sort=='popularity' %}selected{% endif %}>Most Popular</option>
+      <option value="price_low" {% if sort=='price_low' %}selected{% endif %}>Price: Low to High</option>
+      <option value="price_high" {% if sort=='price_high' %}selected{% endif %}>Price: High to Low</option>
+      <option value="discount" {% if sort=='discount' %}selected{% endif %}>Biggest Discount</option>
+      <option value="rating" {% if sort=='rating' %}selected{% endif %}>Highest Rated</option>
+    </select>
+  </div>
+  <div class="col-md-2 d-grid">
+    <button class="btn btn-neon"><i class="fa-solid fa-filter me-1"></i>Filter</button>
+  </div>
+</form>
+
+<!-- GRID VIEW: richer visual cards, same filtered/sorted game set -->
+<div class="row g-3" id="gvGridView">
+  {% for game in games %}
+  <div class="col-6 col-md-4 col-lg-3">
+    {% include "partials/_game_card.html" %}
+  </div>
+  {% else %}
+  <div class="col-12 text-center text-muted py-4">No games with an officially verified price match your filters.</div>
+  {% endfor %}
+</div>
+
+<!-- TABLE VIEW: dense side-by-side price comparison across stores -->
+<div class="table-responsive" id="gvTableView" style="display:none;">
+  <table class="table compare-table align-middle">
+    <thead>
+      <tr>
+        <th>Game</th>
+        <th>Genre</th>
+        <th>Rating</th>
+        <th>Release</th>
+        <th>Platforms &amp; Prices</th>
+        <th>Best Deal</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for game in games %}
+      <tr>
+        <td style="min-width:200px;">
+          <div class="d-flex align-items-center gap-2">
+            <img loading="lazy" src="{{ game.cover_image }}"
+              style="width:44px;height:58px;object-fit:cover;border-radius:6px;">
+            <div>
+              <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="fw-semibold text-decoration-none"
+                style="color:#0400ff">{{ game.title }}</a>
+              <div class="small text-muted">{{ game.developer }}</div>
+            </div>
+          </div>
+        </td>
+        <td>{% if game.category %}<span class="platform-chip">{{ game.category.name }}</span>{% endif %}</td>
+        <td class="rating-stars">★ {{ '%.1f'|format(game.rating) }}</td>
+        <td class="small text-muted">{{ game.release_date.strftime('%b %Y') if game.release_date else '-' }}</td>
+        <td>
+          <div class="d-flex flex-wrap gap-1">
+            {% for listing in game.sorted_listings if listing.current_price is not none or listing.store_product_id %}
+            <span class="platform-chip" {% if game.best_price and listing.id==game.best_price.id
+              %}style="border-color:var(--neon-lime);color:var(--neon-lime);" {% endif %}
+              title="Updated {{ listing.updated_at.strftime('%d %b, %I:%M %p') if listing.updated_at else 'recently' }}">
+              {{ listing.platform.name }}:
+              {% if listing.current_price is none %}
+              <span class="text-muted">Checking…</span>
+              {% else %}
+              {{ listing.current_price|official_price(listing.price_currency) }}{% if listing.discount_percent %} <span
+                style="color:var(--neon-magenta)">(-{{ listing.discount_percent }}%)</span>{% endif %}
+              {% endif %}
+              {% if game.best_price and listing.id==game.best_price.id %} <i class="fa-solid fa-star"
+                style="font-size:0.6rem;"></i>{% endif %}
+            </span>
+            {% endfor %}
+          </div>
+        </td>
+        <td>
+          {% if game.best_price %}
+          <span class="fw-bold" style="color:#ffd700">{{
+            game.best_price.current_price|official_price(game.best_price.price_currency) }}</span>
+          <div class="small text-muted">{{ game.best_price.platform.name }}</div>
+          {% else %}
+          <span class="text-muted small">N/A</span>
+          {% endif %}
+        </td>
+        <td>
+          <div class="d-flex gap-2">
+            <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="btn btn-outline-neon btn-sm">Details</a>
+            <button class="btn btn-neon btn-sm wishlist-heart-btn wishlist-heart" data-game-id="{{ game.id }}"><i
+                class="fa-solid fa-heart"></i></button>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7" class="text-center text-muted py-4">No games with an officially verified price match your filters.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if pagination and pagination.pages > 1 %}
+<nav class="d-flex justify-content-center mt-4">
+  <ul class="pagination">
+    {% for p in range(1, pagination.pages + 1) %}
+    <li class="page-item {% if p==pagination.page %}active{% endif %}">
+      <a class="page-link"
+        style="background:var(--bg-panel);border-color:var(--glass-border);color:var(--text-primary);"
+        href="{{ url_for('main.compare', q=search, genre=selected_genre, platform=selected_platform, sort=sort, page=p) }}">{{
+        p }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}
+
+<script>
+(function () {
+  const KEY = "gv_compare_view";
+  const gridBtn = document.getElementById("gvViewGrid");
+  const tableBtn = document.getElementById("gvViewTable");
+  const gridView = document.getElementById("gvGridView");
+  const tableView = document.getElementById("gvTableView");
+  if (!gridBtn) return;
+
+  function setView(view) {
+    const isGrid = view !== "table";
+    gridView.style.display = isGrid ? "" : "none";
+    tableView.style.display = isGrid ? "none" : "";
+    gridBtn.classList.toggle("active", isGrid);
+    tableBtn.classList.toggle("active", !isGrid);
+    try { localStorage.setItem(KEY, view); } catch (_) {}
+  }
+
+  gridBtn.addEventListener("click", () => setView("grid"));
+  tableBtn.addEventListener("click", () => setView("table"));
+
+  let saved = "grid";
+  try { saved = localStorage.getItem(KEY) || "grid"; } catch (_) {}
+  setView(saved);
+})();
+</script>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — GameVault{% endblock %}
+{% block content %}
+<div class="glass auth-card fade-in">
+  <h2 class="fw-bold text-center mb-1">Create Your Account</h2>
+  <p class="text-muted text-center mb-4">Join GameVault and never overpay for a game again.</p>
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label small text-muted">Username</label>
+      <input type="text" name="username" required class="form-control form-control-gv" placeholder="your_gamer_tag">
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Email</label>
+      <input type="email" name="email" required class="form-control form-control-gv" placeholder="you@example.com">
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Password</label>
+      <input type="password" name="password" required class="form-control form-control-gv" placeholder="••••••••">
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Confirm Password</label>
+      <input type="password" name="confirm_password" required class="form-control form-control-gv" placeholder="••••••••">
+    </div>
+    <button class="btn btn-neon w-100 mb-3">Create Account</button>
+    <p class="text-center small text-muted mb-0">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+  </form>
+
+  {% set google_button_label = "Sign up with Google" %}
+  {% include "auth/_google_button.html" %}
+</div>
+{% endblock %}
