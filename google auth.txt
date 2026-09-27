@@ -1,3 +1,0 @@
-Client ID         551124678128-pbek2oaapvqd5nc9jptm7994456s45gl.apps.googleusercontent.com
-
-Client secret     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
