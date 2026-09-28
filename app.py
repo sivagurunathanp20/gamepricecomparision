@@ -186,15 +186,31 @@ def create_app(config_class=Config):
 
     with app.app_context():
         try:
-            db.create_all()          # auto-create tables on remote DB / sqlite
+            db.create_all()
+        except Exception as e:
+            app.logger.warning("db.create_all error: %s", e)
+
+        try:
             _ensure_google_auth_columns()
+        except Exception:
+            pass
+
+        try:
             _ensure_price_verification_columns()
+        except Exception:
+            pass
+
+        try:
             _ensure_real_game_images()
-            if Game.query.first() is None:
+        except Exception:
+            pass
+
+        try:
+            if Game.query.count() < 10:
                 from seed import populate_seed_data
                 populate_seed_data(drop=False)
         except Exception as e:
-            app.logger.warning("Startup DB init check: %s", e)
+            app.logger.warning("Startup seeding error: %s", e)
 
     from routes.auth import auth_bp
     from routes.main import main_bp
