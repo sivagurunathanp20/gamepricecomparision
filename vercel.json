@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "game_deals.db,templates/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/((?!static/).*)",
