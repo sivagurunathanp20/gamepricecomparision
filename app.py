@@ -89,16 +89,17 @@ def create_app(config_class=Config):
             client_kwargs={"scope": "openid email profile"},
         )
 
-    with app.app_context():
-        try:
-            db.create_all()          # auto-create tables on remote DB / sqlite
-            _ensure_google_auth_columns()
-            _ensure_price_verification_columns()
-            if Game.query.first() is None:
-                from seed import populate_seed_data
-                populate_seed_data(drop=False)
-        except Exception as e:
-            app.logger.warning("Startup DB init check: %s", e)
+    if not os.environ.get("VERCEL"):
+        with app.app_context():
+            try:
+                db.create_all()          # auto-create tables on remote DB / sqlite
+                _ensure_google_auth_columns()
+                _ensure_price_verification_columns()
+                if Game.query.first() is None:
+                    from seed import populate_seed_data
+                    populate_seed_data(drop=False)
+            except Exception as e:
+                app.logger.warning("Startup DB init check: %s", e)
 
     from routes.auth import auth_bp
     from routes.main import main_bp
