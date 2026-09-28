@@ -25,6 +25,10 @@ class Config:
     # DATABASE
     # ------------------------------------------------------------------
     _db_url = os.environ.get("DATABASE_URL")
+    if os.environ.get("VERCEL") and _db_url and "railway.internal" in _db_url:
+        # railway.internal is only reachable within Railway's private network
+        _db_url = None
+
     if not _db_url:
         if os.environ.get("VERCEL"):
             tmp_db = "/tmp/game_deals.db"
@@ -38,12 +42,10 @@ class Config:
             _db_url = f"sqlite:///{tmp_db}"
         else:
             _db_url = f"sqlite:///{os.path.join(BASE_DIR, 'game_deals.db')}"
-    elif _db_url.startswith("postgres://") or _db_url.startswith("postgresql://"):
-        driver = "+pg8000" if os.environ.get("VERCEL") else "+psycopg2"
-        if _db_url.startswith("postgres://"):
-            _db_url = _db_url.replace("postgres://", f"postgresql{driver}://", 1)
-        elif not _db_url.startswith("postgresql+"):
-            _db_url = _db_url.replace("postgresql://", f"postgresql{driver}://", 1)
+    elif _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif _db_url.startswith("postgresql://") and not _db_url.startswith("postgresql+"):
+        _db_url = _db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
     SQLALCHEMY_DATABASE_URI = _db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
