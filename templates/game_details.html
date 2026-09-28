@@ -6,7 +6,7 @@
   <div class="col-lg-4">
     <div class="glass p-3">
       <img loading="lazy" src="{{ game.display_image }}" class="w-100 rounded mb-3" style="aspect-ratio:5/4;object-fit:cover;"
-           onerror="this.onerror=null;this.src='https://cdn.akamai.steamstatic.com/steam/apps/{{ game.steam_app_id or 1091500 }}/header.jpg';">
+           onerror="this.onerror=null;this.src='/static/img/placeholder.svg';">
       <h2 class="fw-bold">{{ game.title }}</h2>
       <div class="rating-stars mb-2">★★★★★ <span class="text-muted small">{{ '%.1f'|format(game.rating) }}/5</span></div>
       <p class="small text-muted mb-1"><strong>Developer:</strong> {{ game.developer }}</p>

@@ -99,14 +99,13 @@ class Game(db.Model):
 
     @property
     def display_image(self):
+        if self.steam_app_id:
+            return f"https://cdn.akamai.steamstatic.com/steam/apps/{self.steam_app_id}/header.jpg"
         if self.cover_image and "placeholder" not in self.cover_image:
             return self.cover_image
         if self.banner_image and "placeholder" not in self.banner_image:
             return self.banner_image
-        if self.steam_app_id:
-            return f"https://cdn.akamai.steamstatic.com/steam/apps/{self.steam_app_id}/header.jpg"
 
-        # Dedicated artwork URLs for console/non-Steam exclusives
         _EXCLUSIVE_COVERS = {
             "gran-turismo-7": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-7-keyart-01-en-14sep21",
             "castlevania-symphony-of-the-night": "https://cdn.akamai.steamstatic.com/steam/apps/1807650/header.jpg",
@@ -118,7 +117,7 @@ class Game(db.Model):
         if self.slug in _EXCLUSIVE_COVERS:
             return _EXCLUSIVE_COVERS[self.slug]
 
-        return f"https://cdn.akamai.steamstatic.com/steam/apps/1091500/header.jpg"
+        return "/static/img/placeholder.svg"
 
     @property
     def best_price(self):

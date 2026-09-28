@@ -11,7 +11,7 @@
     <div class="glass p-3 h-100">
       <div class="d-flex gap-3">
         <img loading="lazy" src="{{ item.game.display_image }}" 
-             onerror="this.onerror=null;this.src='https://cdn.akamai.steamstatic.com/steam/apps/{{ item.game.steam_app_id or 1091500 }}/header.jpg';"
+             onerror="this.onerror=null;this.src='/static/img/placeholder.svg';"
              style="width:70px;height:94px;object-fit:cover;border-radius:8px;">
         <div class="flex-grow-1">
           <a href="{{ url_for('main.game_details', slug=item.game.slug) }}" class="fw-semibold text-decoration-none" style="color:var(--text-primary)">{{ item.game.title }}</a>

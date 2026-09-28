@@ -553,6 +553,17 @@ def populate_seed_data(drop=False):
     category_objs = {c.name: c for c in Category.query.all()}
 
     if Game.query.first() is not None and not drop:
+        # Update existing games with accurate Steam CDN header art and appids
+        for g in GAMES:
+            slug = g["title"].lower().replace(" ", "-").replace(":", "").replace("'", "").replace("!", "")
+            existing = Game.query.filter_by(slug=slug).first() or Game.query.filter_by(title=g["title"]).first()
+            if existing:
+                if g.get("appid"):
+                    existing.steam_app_id = g["appid"]
+                    existing.cover_image = f"https://cdn.akamai.steamstatic.com/steam/apps/{g['appid']}/header.jpg"
+                    existing.banner_image = f"https://cdn.akamai.steamstatic.com/steam/apps/{g['appid']}/header.jpg"
+        db.session.commit()
+        print("Updated all existing games with official Steam artwork.")
         return
 
     # --- Games + platform listings + price history + deals ---

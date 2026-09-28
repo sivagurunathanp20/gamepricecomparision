@@ -23,7 +23,7 @@
     <div class="glass p-3 h-100 d-flex flex-column">
       <div class="d-flex gap-3">
         <img loading="lazy" src="{{ deal.game.display_image }}"
-          onerror="this.onerror=null;this.src='https://cdn.akamai.steamstatic.com/steam/apps/{{ deal.game.steam_app_id or 1091500 }}/header.jpg';"
+          onerror="this.onerror=null;this.src='/static/img/placeholder.svg';"
           style="width:70px;height:94px;object-fit:cover;border-radius:8px;">
         <div class="flex-grow-1">
           <div class="fw-semibold">{{ deal.game.title }}</div>
