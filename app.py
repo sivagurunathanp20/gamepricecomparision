@@ -38,24 +38,26 @@ def _ensure_price_verification_columns():
         if "game_platforms" not in tables:
             return
         gp = {c["name"] for c in inspector.get_columns("game_platforms")}
-        stmts = []
+        is_postgres = db.engine.dialect.name == "postgresql"
+        dt_type = "TIMESTAMP" if is_postgres else "DATETIME"
+        bool_default = "FALSE" if is_postgres else "0"
         if "store_product_id" not in gp:
             stmts.append("ALTER TABLE game_platforms ADD COLUMN store_product_id VARCHAR(128)")
         if "last_verified_at" not in gp:
-            stmts.append("ALTER TABLE game_platforms ADD COLUMN last_verified_at DATETIME")
+            stmts.append(f"ALTER TABLE game_platforms ADD COLUMN last_verified_at {dt_type}")
         if "verify_status" not in gp:
             stmts.append("ALTER TABLE game_platforms ADD COLUMN verify_status VARCHAR(12)")
         if "verify_error" not in gp:
             stmts.append("ALTER TABLE game_platforms ADD COLUMN verify_error VARCHAR(255) DEFAULT ''")
         if "price_history" in tables and "verified" not in {c["name"] for c in inspector.get_columns("price_history")}:
-            stmts.append("ALTER TABLE price_history ADD COLUMN verified BOOLEAN DEFAULT 0")
+            stmts.append(f"ALTER TABLE price_history ADD COLUMN verified BOOLEAN DEFAULT {bool_default}")
         with db.engine.begin() as conn:
             for sql in stmts:
                 conn.execute(text(sql))
             conn.execute(text(
                 "UPDATE game_platforms SET verify_status='unverified', current_price=NULL, "
                 "original_price=NULL, discount_percent=0 WHERE verify_status IS NULL"))
-            conn.execute(text("UPDATE price_history SET verified=0 WHERE verified IS NULL"))
+            conn.execute(text(f"UPDATE price_history SET verified={bool_default} WHERE verified IS NULL"))
     except Exception:
         pass
 
