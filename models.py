@@ -99,13 +99,26 @@ class Game(db.Model):
 
     @property
     def display_image(self):
-        if self.cover_image and self.cover_image != "/static/img/placeholder.svg":
+        if self.cover_image and "placeholder" not in self.cover_image:
             return self.cover_image
-        if self.banner_image:
+        if self.banner_image and "placeholder" not in self.banner_image:
             return self.banner_image
         if self.steam_app_id:
             return f"https://cdn.akamai.steamstatic.com/steam/apps/{self.steam_app_id}/header.jpg"
-        return "/static/img/placeholder.svg"
+
+        # Dedicated artwork URLs for console/non-Steam exclusives
+        _EXCLUSIVE_COVERS = {
+            "gran-turismo-7": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-7-keyart-01-en-14sep21",
+            "castlevania-symphony-of-the-night": "https://cdn.akamai.steamstatic.com/steam/apps/1807650/header.jpg",
+            "rayman-legends-definitive-ed": "https://cdn.akamai.steamstatic.com/steam/apps/242550/header.jpg",
+            "rune-factory-5": "https://cdn.akamai.steamstatic.com/steam/apps/1702330/header.jpg",
+            "celestia-chain-of-fate": "https://cdn.akamai.steamstatic.com/steam/apps/2591600/header.jpg",
+            "record-of-lodoss-war-deedlit-in-wl": "https://cdn.akamai.steamstatic.com/steam/apps/1082900/header.jpg",
+        }
+        if self.slug in _EXCLUSIVE_COVERS:
+            return _EXCLUSIVE_COVERS[self.slug]
+
+        return f"https://cdn.akamai.steamstatic.com/steam/apps/1091500/header.jpg"
 
     @property
     def best_price(self):
