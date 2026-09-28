@@ -11,6 +11,8 @@ main_bp = Blueprint("main", __name__)
 
 
 @main_bp.route("/")
+@main_bp.route("/api")
+@main_bp.route("/api/index")
 def home():
     now = datetime.utcnow()
     # Only show deals that are active (no expiry or expiry in the future)

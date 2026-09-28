@@ -1,13 +1,8 @@
 {
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "game_deals.db,templates/**"
-    }
-  },
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/api/index.py"
+      "source": "/((?!static/).*)",
+      "destination": "/api/index"
     }
   ]
 }
