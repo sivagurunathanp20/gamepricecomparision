@@ -14,9 +14,12 @@ def _google_client():
 
 
 def _google_redirect_uri():
-    return current_app.config.get("GOOGLE_REDIRECT_URI") or url_for(
-        "auth.google_callback", _external=True
-    )
+    configured = current_app.config.get("GOOGLE_REDIRECT_URI")
+    if configured:
+        return configured
+    scheme = request.headers.get("X-Forwarded-Proto", request.scheme)
+    host = request.headers.get("X-Forwarded-Host", request.host)
+    return f"{scheme}://{host}/auth/google/callback"
 
 
 def _safe_next(target):

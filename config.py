@@ -96,11 +96,7 @@ class Config:
     # ------------------------------------------------------------------
     GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
     GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
-    # Must match an Authorized redirect URI in Google Cloud Console exactly.
-    # Default uses 127.0.0.1 (not localhost) — Google treats those as different.
-    GOOGLE_REDIRECT_URI = os.environ.get(
-        "GOOGLE_REDIRECT_URI", "http://127.0.0.1:5000/auth/google/callback"
-    )
+    GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI", "")
 
     # ------------------------------------------------------------------
     # VAULT AI ASSISTANT (Claude API)
