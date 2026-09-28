@@ -557,126 +557,128 @@ def populate_seed_data(drop=False):
 
     # --- Games + platform listings + price history + deals ---
     for i, g in enumerate(GAMES):
-            slug = g["title"].lower().replace(" ", "-").replace(":", "").replace("'", "").replace("!", "")
-            # random release date between 1 and 5 years ago
-            release = date.today() - timedelta(days=random.randint(365, 365 * 5))
-            game = Game(
-                title=g["title"],
-                slug=slug,
-                steam_app_id=g.get("appid"),
-                description=(
-                    f"{g['title']} is an acclaimed {g['category'].lower()} title from {g['dev']}, "
-                    f"published by {g['pub']}. Featuring a rich world, tight mechanics, and a "
-                    f"dedicated community of players since launch."
-                ),
-                cover_image=_game_cover(g["title"], g.get("appid")),
-                banner_image=_game_banner(g.get("appid")),
-                developer=g["dev"],
-                publisher=g["pub"],
-                release_date=release,
-                rating=g["rating"],
-                popularity_score=g["popularity"],
-                category_id=category_objs[g["category"]].id,
-                is_free_to_play=g["ftp"],
-            )
-            db.session.add(game)
-            db.session.commit()
+        slug = g["title"].lower().replace(" ", "-").replace(":", "").replace("'", "").replace("!", "")
+        # random release date between 1 and 5 years ago
+        release = date.today() - timedelta(days=random.randint(365, 365 * 5))
+        game = Game(
+            title=g["title"],
+            slug=slug,
+            steam_app_id=g.get("appid"),
+            description=(
+                f"{g['title']} is an acclaimed {g['category'].lower()} title from {g['dev']}, "
+                f"published by {g['pub']}. Featuring a rich world, tight mechanics, and a "
+                f"dedicated community of players since launch."
+            ),
+            cover_image=_game_cover(g["title"], g.get("appid")),
+            banner_image=_game_banner(g.get("appid")),
+            developer=g["dev"],
+            publisher=g["pub"],
+            release_date=release,
+            rating=g["rating"],
+            popularity_score=g["popularity"],
+            category_id=category_objs[g["category"]].id,
+            is_free_to_play=g["ftp"],
+        )
+        db.session.add(game)
+        db.session.commit()
 
-            base_price = 0.0 if g["ftp"] else round(random.uniform(19.99, 69.99), 2)
-            num_platforms = random.randint(2, 5)
-            chosen_platforms = random.sample(PLATFORMS, min(num_platforms, len(PLATFORMS)))
+        base_price = 0.0 if g["ftp"] else round(random.uniform(19.99, 69.99), 2)
+        num_platforms = random.randint(2, 5)
+        chosen_platforms = random.sample(PLATFORMS, min(num_platforms, len(PLATFORMS)))
 
-            for plat_name in chosen_platforms:
-                platform = platform_objs[plat_name]
-                discount = 0 if g["ftp"] else random.choice([0, 0, 10, 20, 25, 33, 40, 50, 60, 75])
-                current = round(base_price * (1 - discount / 100), 2)
+        for plat_name in chosen_platforms:
+            platform = platform_objs[plat_name]
+            discount = 0 if g["ftp"] else random.choice([0, 0, 10, 20, 25, 33, 40, 50, 60, 75])
+            current = round(base_price * (1 - discount / 100), 2)
 
-                # Build the most specific URL available:
-                # Steam → direct app page, others → search URL with title,
-                # so Buy buttons never land on a bare homepage.
-                if plat_name == "Steam" and g.get("appid"):
-                    seed_url = build_store_url(
-                        store_name="Steam",
-                        game_title=g["title"],
-                        steam_app_id=g["appid"],
-                    )
-                else:
-                    seed_url = build_store_url(
-                        store_name=plat_name,
-                        game_title=g["title"],
-                    )
-
-                listing = GamePlatform(
-                    game_id=game.id,
-                    platform_id=platform.id,
-                    original_price=base_price,
-                    current_price=current,  # 0.0 for F2P, real price otherwise
-                    discount_percent=discount,
-                    store_url=seed_url,
-                    in_stock=True,
+            # Build the most specific URL available:
+            # Steam → direct app page, others → search URL with title,
+            # so Buy buttons never land on a bare homepage.
+            if plat_name == "Steam" and g.get("appid"):
+                seed_url = build_store_url(
+                    store_name="Steam",
+                    game_title=g["title"],
+                    steam_app_id=g["appid"],
                 )
-                db.session.add(listing)
+            else:
+                seed_url = build_store_url(
+                    store_name=plat_name,
+                    game_title=g["title"],
+                )
 
-                # 6 months of fabricated price history for the chart
-                price = base_price
-                for week in range(24, 0, -1):
-                    drift = random.choice([-0.05, 0, 0, 0.05, -0.1, 0.1])
-                    price = max(0, round(price * (1 + drift), 2))
-                    db.session.add(
-                        PriceHistory(
-                            game_id=game.id,
-                            platform_id=platform.id,
-                            price=price,
-                            recorded_at=datetime.utcnow() - timedelta(weeks=week),
-                        )
+            listing = GamePlatform(
+                game_id=game.id,
+                platform_id=platform.id,
+                original_price=base_price,
+                current_price=current,  # 0.0 for F2P, real price otherwise
+                discount_percent=discount,
+                store_url=seed_url,
+                in_stock=True,
+            )
+            db.session.add(listing)
+
+            # 6 months of fabricated price history for the chart
+            price = base_price
+            for week in range(24, 0, -1):
+                drift = random.choice([-0.05, 0, 0, 0.05, -0.1, 0.1])
+                price = max(0, round(price * (1 + drift), 2))
+                db.session.add(
+                    PriceHistory(
+                        game_id=game.id,
+                        platform_id=platform.id,
+                        price=price,
+                        recorded_at=datetime.utcnow() - timedelta(weeks=week),
                     )
+                )
 
-                if discount >= 10:
-                    is_free_deal = g["ftp"] and discount == 0
-                    deal_type = "free" if g["ftp"] else "discount"
-                    db.session.add(
-                        Deal(
-                            game_id=game.id,
-                            platform_id=platform.id,
-                            deal_type=deal_type,
-                            discount_percent=discount,
-                            starts_at=datetime.utcnow() - timedelta(days=random.randint(0, 5)),
-                            expires_at=datetime.utcnow() + timedelta(days=random.randint(1, 14)),
-                            is_featured=discount >= 50,
-                        )
-                    )
-
-            if g["ftp"]:
-                # ensure every free-to-play game has an explicit "free" deal entry
-                platform = platform_objs[chosen_platforms[0]]
+            if discount >= 10:
+                is_free_deal = g["ftp"] and discount == 0
+                deal_type = "free" if g["ftp"] else "discount"
                 db.session.add(
                     Deal(
                         game_id=game.id,
                         platform_id=platform.id,
-                        deal_type=random.choice(["free", "giveaway", "weekend_ftp"]),
-                        discount_percent=100,
-                        expires_at=datetime.utcnow() + timedelta(days=random.randint(1, 10)),
-                        is_featured=True,
+                        deal_type=deal_type,
+                        discount_percent=discount,
+                        starts_at=datetime.utcnow() - timedelta(days=random.randint(0, 5)),
+                        expires_at=datetime.utcnow() + timedelta(days=random.randint(1, 14)),
+                        is_featured=discount >= 50,
                     )
                 )
 
-            # a couple of demo reviews per game
-            if random.random() > 0.4:
-                db.session.add(
-                    Review(
-                        user_id=demo.id,
-                        game_id=game.id,
-                        rating=random.randint(3, 5),
-                        comment=random.choice([
-                            "Solid gameplay loop, well worth it on sale.",
-                            "Great visuals and a gripping story.",
-                            "A bit buggy at launch but much improved now.",
-                            "One of my favorites this year!",
-                        ]),
-                    )
+        if g["ftp"]:
+            # ensure every free-to-play game has an explicit "free" deal entry
+            platform = platform_objs[chosen_platforms[0]]
+            db.session.add(
+                Deal(
+                    game_id=game.id,
+                    platform_id=platform.id,
+                    deal_type=random.choice(["free", "giveaway", "weekend_ftp"]),
+                    discount_percent=100,
+                    expires_at=datetime.utcnow() + timedelta(days=random.randint(1, 10)),
+                    is_featured=True,
                 )
+            )
 
-        db.session.commit()
+        # a couple of demo reviews per game
+        if random.random() > 0.4:
+            db.session.add(
+                Review(
+                    user_id=demo.id,
+                    game_id=game.id,
+                    rating=random.randint(3, 5),
+                    comment=random.choice([
+                        "Solid gameplay loop, well worth it on sale.",
+                        "Great visuals and a gripping story.",
+                        "A bit buggy at launch but much improved now.",
+                        "One of my favorites this year!",
+                    ]),
+                )
+            )
+
+    db.session.commit()
+
+
 def run_seed():
     app = create_app()
     with app.app_context():
