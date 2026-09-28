@@ -7,20 +7,22 @@ load_dotenv()
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
+def _get_int(key, default):
+    val = os.environ.get(key)
+    if not val:
+        return default
+    try:
+        return int(val)
+    except (ValueError, TypeError):
+        return default
+
+
 class Config:
     BASE_DIR = BASE_DIR
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "dev-secret-key-change-in-production"
 
     # ------------------------------------------------------------------
     # DATABASE
-    # By default the app runs on SQLite so it works instantly with zero
-    # setup (great for demos / running the college project on a laptop).
-    #
-    # For the real MySQL deployment, set an environment variable:
-    #   DATABASE_URL=mysql+pymysql://user:password@localhost:3306/game_deals_db
-    # and the app will use MySQL automatically. The full MySQL schema is
-    # provided in database/schema.sql if you want to create the DB by hand
-    # instead of letting SQLAlchemy create the tables.
     # ------------------------------------------------------------------
     _db_url = os.environ.get("DATABASE_URL")
     if not _db_url:
@@ -42,38 +44,31 @@ class Config:
         _db_url = _db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
     SQLALCHEMY_DATABASE_URI = _db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
 
     # Sessions
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
 
-    # Mail (deal-price-alert emails). Fill these in with real SMTP creds
-    # to enable actual email sending; otherwise alerts are just logged.
-    MAIL_SERVER = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
-    MAIL_PORT = int(os.environ.get("MAIL_PORT", 587))
+    # Mail (deal-price-alert emails).
+    MAIL_SERVER = os.environ.get("MAIL_SERVER") or "smtp.gmail.com"
+    MAIL_PORT = _get_int("MAIL_PORT", 587)
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME", "")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD", "")
-    MAIL_DEFAULT_SENDER = os.environ.get("MAIL_USERNAME", "noreply@gamevault.com")
+    MAIL_DEFAULT_SENDER = os.environ.get("MAIL_USERNAME", "") or "noreply@gamevault.com"
     MAIL_SUPPRESS_SEND = os.environ.get("MAIL_SUPPRESS_SEND", "1") == "1"
 
     ITEMS_PER_PAGE = 12
 
     # ------------------------------------------------------------------
     # OFFICIAL PRICE VERIFICATION (see official_prices.py)
-    # Every price shown on the site is read from the game's OWN store and
-    # must be re-verified within PRICE_MAX_AGE_MINUTES, otherwise it is
-    # hidden and the UI says "Unable to verify price".
     # ------------------------------------------------------------------
-    # Region whose official storefront prices we show. One region at a time
-    # keeps prices comparable/sortable and identical to what the store shows.
-    STORE_COUNTRY = os.environ.get("STORE_COUNTRY", "IN").upper()      # ISO country code
-    STORE_LOCALE = os.environ.get("STORE_LOCALE", "en-IN")             # used in Xbox/Epic URLs
-    PRICE_MAX_AGE_MINUTES = int(os.environ.get("PRICE_MAX_AGE_MINUTES", 720))   # hide prices older than 12 h
-    PRICE_REFRESH_MINUTES = int(os.environ.get("PRICE_REFRESH_MINUTES", 120))   # background re-verify cadence
-    REFRESH_ON_VIEW_MINUTES = int(os.environ.get("REFRESH_ON_VIEW_MINUTES", 30))  # re-verify when a game page is opened
-    PROBE_PURCHASE_URLS = os.environ.get("PROBE_PURCHASE_URLS", "1") == "1"  # HTTP-check every Buy link
-    # Games with NO verified price are hidden from Browse by default
-    # ("accuracy over showing a game"). Set to 1 to list them as "Unable to verify price".
+    STORE_COUNTRY = (os.environ.get("STORE_COUNTRY") or "IN").upper()
+    STORE_LOCALE = os.environ.get("STORE_LOCALE") or "en-IN"
+    PRICE_MAX_AGE_MINUTES = _get_int("PRICE_MAX_AGE_MINUTES", 720)
+    PRICE_REFRESH_MINUTES = _get_int("PRICE_REFRESH_MINUTES", 120)
+    REFRESH_ON_VIEW_MINUTES = _get_int("REFRESH_ON_VIEW_MINUTES", 30)
+    PROBE_PURCHASE_URLS = os.environ.get("PROBE_PURCHASE_URLS", "1") == "1"
     SHOW_UNVERIFIED_GAMES = os.environ.get("SHOW_UNVERIFIED_GAMES", "0") == "1"
 
     # ------------------------------------------------------------------

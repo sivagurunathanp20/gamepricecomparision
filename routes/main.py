@@ -79,47 +79,50 @@ def home():
     # skipped for this load (results that DO come back are cached, so the
     # next load is fast).
     if len(biggest_discounts) < 8:
-        import concurrent.futures
-        from types import SimpleNamespace
-        from store_apis import cheapshark_lookup_game_id, cheapshark_fetch_prices
+        try:
+            import concurrent.futures
+            from types import SimpleNamespace
+            from store_apis import cheapshark_lookup_game_id, cheapshark_fetch_prices
 
-        def _cs_best_discount(g):
-            cs_id = cheapshark_lookup_game_id(title=g.title, steam_app_id=g.steam_app_id)
-            prices, _ = cheapshark_fetch_prices(cs_id)
-            best = max((p for p in prices if p.get("discount_percent")),
-                       key=lambda p: p["discount_percent"], default=None)
-            if not best:
-                return None
-            return (g, SimpleNamespace(
-                discount_percent=best["discount_percent"],
-                original_price=best["original_price"],
-                current_price=best["current_price"],
-                price_currency="USD",
-                platform=SimpleNamespace(name=best["shop"]),
-            ))
+            def _cs_best_discount(g):
+                cs_id = cheapshark_lookup_game_id(title=g.title, steam_app_id=g.steam_app_id)
+                prices, _ = cheapshark_fetch_prices(cs_id)
+                best = max((p for p in prices if p.get("discount_percent")),
+                           key=lambda p: p["discount_percent"], default=None)
+                if not best:
+                    return None
+                return (g, SimpleNamespace(
+                    discount_percent=best["discount_percent"],
+                    original_price=best["original_price"],
+                    current_price=best["current_price"],
+                    price_currency="USD",
+                    platform=SimpleNamespace(name=best["shop"]),
+                ))
 
-        candidates = (
-            Game.query.filter(~Game.id.in_(_seen_game_ids))
-            .order_by(Game.popularity_score.desc())
-            .limit(12)
-            .all()
-        )
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=8)
-        futures = {pool.submit(_cs_best_discount, g): g for g in candidates}
-        done, not_done = concurrent.futures.wait(futures, timeout=6)
-        for f in not_done:
-            f.cancel()
-        pool.shutdown(wait=False, cancel_futures=True)
-        for f in done:
-            try:
-                result = f.result()
-            except Exception:
-                continue
-            if result and result[0].id not in _seen_game_ids:
-                _seen_game_ids.add(result[0].id)
-                biggest_discounts.append(result)
-        biggest_discounts.sort(key=lambda pair: pair[1].discount_percent, reverse=True)
-        biggest_discounts = biggest_discounts[:8]
+            candidates = (
+                Game.query.filter(~Game.id.in_(_seen_game_ids))
+                .order_by(Game.popularity_score.desc())
+                .limit(12)
+                .all()
+            )
+            pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+            futures = {pool.submit(_cs_best_discount, g): g for g in candidates}
+            done, not_done = concurrent.futures.wait(futures, timeout=3)
+            for f in not_done:
+                f.cancel()
+            pool.shutdown(wait=False, cancel_futures=True)
+            for f in done:
+                try:
+                    result = f.result()
+                except Exception:
+                    continue
+                if result and result[0].id not in _seen_game_ids:
+                    _seen_game_ids.add(result[0].id)
+                    biggest_discounts.append(result)
+            biggest_discounts.sort(key=lambda pair: pair[1].discount_percent, reverse=True)
+            biggest_discounts = biggest_discounts[:8]
+        except Exception:
+            pass
 
     free_games = Game.query.filter_by(is_free_to_play=True).limit(6).all()
     # Top Rated: same verified-only filter as Trending.

@@ -41,6 +41,7 @@ def _ensure_price_verification_columns():
         is_postgres = db.engine.dialect.name == "postgresql"
         dt_type = "TIMESTAMP" if is_postgres else "DATETIME"
         bool_default = "FALSE" if is_postgres else "0"
+        stmts = []
         if "store_product_id" not in gp:
             stmts.append("ALTER TABLE game_platforms ADD COLUMN store_product_id VARCHAR(128)")
         if "last_verified_at" not in gp:
