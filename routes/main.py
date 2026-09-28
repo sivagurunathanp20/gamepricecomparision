@@ -224,7 +224,19 @@ def compare():
 
 @main_bp.route("/game/<slug>")
 def game_details(slug):
-    game = Game.query.filter_by(slug=slug).first_or_404()
+    slug_clean = (slug or "").strip().lower()
+    game = Game.query.filter_by(slug=slug_clean).first()
+    if not game:
+        game = Game.query.filter(func.lower(Game.slug) == slug_clean).first()
+    if not game and slug_clean.isdigit():
+        game = Game.query.get(int(slug_clean))
+    if not game:
+        game = Game.query.filter(func.lower(Game.title) == slug_clean.replace("-", " ")).first()
+    if not game:
+        game = Game.query.filter(Game.slug.ilike(f"%{slug_clean}%")).first()
+    if not game:
+        from flask import abort
+        abort(404)
 
     # track "recently viewed" in session (last 8, most-recent first)
     recent = session.get("recently_viewed", [])

@@ -35,18 +35,22 @@ class Config:
             possible_origs = [
                 os.path.join(BASE_DIR, "game_deals.db"),
                 os.path.join(BASE_DIR, "api", "game_deals.db"),
+                os.path.join(os.path.dirname(__file__), "game_deals.db"),
+                os.path.join(os.path.dirname(__file__), "api", "game_deals.db"),
                 os.path.join(os.getcwd(), "game_deals.db"),
+                os.path.join(os.getcwd(), "api", "game_deals.db"),
                 "/var/task/game_deals.db",
                 "/var/task/api/game_deals.db",
             ]
-            for orig in possible_origs:
-                if os.path.exists(orig) and os.path.getsize(orig) > 100000:
-                    import shutil
-                    try:
-                        shutil.copy2(orig, tmp_db)
-                        break
-                    except Exception:
-                        pass
+            if not os.path.exists(tmp_db) or os.path.getsize(tmp_db) < 100000:
+                for orig in possible_origs:
+                    if os.path.exists(orig) and os.path.getsize(orig) > 100000:
+                        import shutil
+                        try:
+                            shutil.copy2(orig, tmp_db)
+                            break
+                        except Exception:
+                            pass
             _db_url = f"sqlite:///{tmp_db}"
         else:
             _db_url = f"sqlite:///{os.path.join(BASE_DIR, 'game_deals.db')}"
