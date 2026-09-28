@@ -1,8 +1,9 @@
 import sys
 import os
 
-# Make sure the project root is on the path so all imports work.
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _root not in sys.path:
+    sys.path.insert(0, _root)
 
 from app import app  # noqa: E402
 

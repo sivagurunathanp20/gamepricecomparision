@@ -5,7 +5,7 @@ from sqlalchemy import inspect, text
 from config import Config
 from extensions import db, login_manager, bcrypt, mail, oauth
 from models import User, Game
-from scheduler import init_scheduler
+
 
 
 def _ensure_google_auth_columns():
@@ -375,8 +375,12 @@ def create_app(config_class=Config):
             print("\nStopped by user. Progress is saved — run this command again to resume.")
 
     # ── Background scheduler (price sync + expired deal cleanup) ──────────────
-    # Starts a daemon thread; safe to call multiple times (guarded internally).
-    init_scheduler(app)
+    if not os.environ.get("VERCEL"):
+        try:
+            from scheduler import init_scheduler
+            init_scheduler(app)
+        except Exception as e:
+            app.logger.warning("Scheduler startup skipped: %s", e)
 
     return app
 
