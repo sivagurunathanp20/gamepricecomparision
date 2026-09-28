@@ -128,6 +128,16 @@ def create_app(config_class=Config):
     def forbidden(e):
         return render_template("errors/403.html"), 403
 
+    @app.errorhandler(500)
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        import traceback
+        tb = traceback.format_exc()
+        app.logger.error("Application error: %s\n%s", e, tb)
+        if os.environ.get("VERCEL") or app.debug:
+            return f"<div style='font-family:sans-serif;padding:30px;background:#1a1a1a;color:#fff;min-height:100vh;'><h2>Application Error (500)</h2><p>{e}</p><pre style='background:#0d1117;color:#ff7b72;padding:20px;border-radius:8px;white-space:pre-wrap;overflow-x:auto;font-size:14px;'>{tb}</pre></div>", 500
+        return f"<h2>500 Internal Server Error</h2><p>{e}</p>", 500
+
     @app.context_processor
     def inject_globals():
         from datetime import datetime
