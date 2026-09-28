@@ -63,6 +63,25 @@ def _ensure_price_verification_columns():
         pass
 
 
+def _ensure_real_game_images():
+    """Update all seeded games in the DB to use real Steam CDN header images."""
+    try:
+        inspector = inspect(db.engine)
+        if "games" not in inspector.get_table_names():
+            return
+        with db.engine.begin() as conn:
+            conn.execute(text(
+                "UPDATE games SET cover_image = 'https://cdn.akamai.steamstatic.com/steam/apps/' || CAST(steam_app_id AS VARCHAR) || '/header.jpg' "
+                "WHERE steam_app_id IS NOT NULL AND (cover_image LIKE '%placeholder%' OR cover_image LIKE '%library_600x900%' OR cover_image IS NULL OR cover_image = '')"
+            ))
+            conn.execute(text(
+                "UPDATE games SET banner_image = 'https://cdn.akamai.steamstatic.com/steam/apps/' || CAST(steam_app_id AS VARCHAR) || '/header.jpg' "
+                "WHERE steam_app_id IS NOT NULL AND (banner_image IS NULL OR banner_image = '')"
+            ))
+    except Exception:
+        pass
+
+
 def create_app(config_class=Config):
     import os
     app = Flask(
@@ -95,6 +114,7 @@ def create_app(config_class=Config):
                 db.create_all()          # auto-create tables on remote DB / sqlite
                 _ensure_google_auth_columns()
                 _ensure_price_verification_columns()
+                _ensure_real_game_images()
                 if Game.query.first() is None:
                     from seed import populate_seed_data
                     populate_seed_data(drop=False)

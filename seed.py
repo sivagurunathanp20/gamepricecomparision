@@ -501,7 +501,7 @@ def _game_cover(title, appid=None):
     Games with a Steam App ID get a real cover image from Steam CDN.
     Games without a Steam App ID fall back to the sleek local SVG placeholder."""
     if appid:
-        return f"https://cdn.akamai.steamstatic.com/steam/apps/{appid}/library_600x900.jpg"
+        return f"https://cdn.akamai.steamstatic.com/steam/apps/{appid}/header.jpg"
     return "/static/img/placeholder.svg"
 
 
