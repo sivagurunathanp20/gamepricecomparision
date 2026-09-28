@@ -98,6 +98,16 @@ class Game(db.Model):
     aliases = db.relationship("GameAlias", backref="game", lazy=True, cascade="all, delete-orphan")
 
     @property
+    def display_image(self):
+        if self.cover_image and self.cover_image != "/static/img/placeholder.svg":
+            return self.cover_image
+        if self.banner_image:
+            return self.banner_image
+        if self.steam_app_id:
+            return f"https://cdn.akamai.steamstatic.com/steam/apps/{self.steam_app_id}/header.jpg"
+        return "/static/img/placeholder.svg"
+
+    @property
     def best_price(self):
         """The store listing with the lowest OFFICIALLY VERIFIED, FRESH price.
         A listing whose price could not be verified (or has gone stale) is

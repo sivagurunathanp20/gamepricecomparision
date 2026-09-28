@@ -20,8 +20,8 @@
       <i class="fa-solid fa-heart"></i>
     </div>
     <a href="{{ url_for('main.game_details', slug=game.slug) }}">
-      <img loading="lazy" src="{{ game.cover_image or (('https://cdn.akamai.steamstatic.com/steam/apps/' ~ game.steam_app_id ~ '/header.jpg') if game.steam_app_id else '/static/img/placeholder.svg') }}" alt="{{ game.title }}"
-           onerror="if (this.src.indexOf('library_600x900') !== -1 && '{{ game.steam_app_id or '' }}') { this.src='https://cdn.akamai.steamstatic.com/steam/apps/{{ game.steam_app_id }}/header.jpg'; } else { this.onerror=null; this.src='/static/img/placeholder.svg'; }">
+      <img loading="lazy" src="{{ game.display_image }}" alt="{{ game.title }}"
+           onerror="if (this.src.indexOf('header.jpg') === -1 && '{{ game.steam_app_id or '' }}') { this.src='https://cdn.akamai.steamstatic.com/steam/apps/{{ game.steam_app_id }}/header.jpg'; } else { this.onerror=null; this.src='/static/img/placeholder.svg'; }">
     </a>
   </div>
   <div class="p-3">
