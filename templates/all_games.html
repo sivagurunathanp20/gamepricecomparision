@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}All Games — GameVault{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h1 class="section-title mb-0">All Games</h1>
+  <span class="text-muted small">{{ pagination.total }} games</span>
+</div>
+
+{# ── Filter bar ───────────────────────────────────────────────── #}
+<form method="GET" action="{{ url_for('main.all_games') }}" class="mb-4" id="filterForm">
+  <div class="row g-2 align-items-end">
+
+    {# Search #}
+    <div class="col-12 col-md-4">
+      <div class="position-relative">
+        <i class="fa-solid fa-magnifying-glass position-absolute" style="top:50%;left:12px;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;"></i>
+        <input type="text" name="q" value="{{ search }}" class="form-control form-control-gv"
+               placeholder="Search games…" style="padding-left:36px;" id="allGamesSearch">
+      </div>
+    </div>
+
+    {# Category #}
+    <div class="col-6 col-md-2">
+      <select name="genre" class="form-select form-control-gv" onchange="this.form.submit()">
+        <option value="">All Genres</option>
+        {% for cat in categories %}
+        <option value="{{ cat.slug }}" {% if selected_genre == cat.slug %}selected{% endif %}>
+          {{ cat.name }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    {# Platform #}
+    <div class="col-6 col-md-2">
+      <select name="platform" class="form-select form-control-gv" onchange="this.form.submit()">
+        <option value="">All Stores</option>
+        {% for p in platforms %}
+        <option value="{{ p.name }}" {% if selected_platform == p.name %}selected{% endif %}>
+          {{ p.name }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    {# Type filter #}
+    <div class="col-6 col-md-2">
+      <select name="type" class="form-select form-control-gv" onchange="this.form.submit()">
+        <option value="all"     {% if selected_type == 'all'     %}selected{% endif %}>All Types</option>
+        <option value="paid"    {% if selected_type == 'paid'    %}selected{% endif %}>Paid</option>
+        <option value="free"    {% if selected_type == 'free'    %}selected{% endif %}>Free to Play</option>
+        <option value="deals"   {% if selected_type == 'deals'   %}selected{% endif %}>On Sale</option>
+      </select>
+    </div>
+
+    {# Sort #}
+    <div class="col-6 col-md-2">
+      <select name="sort" class="form-select form-control-gv" onchange="this.form.submit()">
+        <option value="popularity" {% if sort == 'popularity' %}selected{% endif %}>Most Popular</option>
+        <option value="rating"     {% if sort == 'rating'     %}selected{% endif %}>Top Rated</option>
+        <option value="price_low"  {% if sort == 'price_low'  %}selected{% endif %}>Price: Low → High</option>
+        <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: High → Low</option>
+        <option value="newest"     {% if sort == 'newest'     %}selected{% endif %}>Newest</option>
+        <option value="az"         {% if sort == 'az'         %}selected{% endif %}>A → Z</option>
+      </select>
+    </div>
+
+    {# Hidden submit + clear #}
+    <div class="col-12 d-flex gap-2">
+      <button type="submit" class="btn btn-neon btn-sm px-3">
+        <i class="fa-solid fa-filter me-1"></i>Apply
+      </button>
+      {% if search or selected_genre or selected_platform or selected_type != 'all' %}
+      <a href="{{ url_for('main.all_games') }}" class="btn btn-outline-neon btn-sm px-3">
+        <i class="fa-solid fa-xmark me-1"></i>Clear
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</form>
+
+{# ── Game grid ────────────────────────────────────────────────── #}
+{% if games %}
+<div class="row g-3">
+  {% for game in games %}
+  <div class="col-6 col-md-3 col-lg-2">
+    {% include "partials/_game_card.html" %}
+  </div>
+  {% endfor %}
+</div>
+
+{# ── Pagination ───────────────────────────────────────────────── #}
+{% if pagination.pages > 1 %}
+<nav class="mt-5 d-flex justify-content-center" aria-label="Game pages">
+  <ul class="pagination pagination-gv gap-1">
+    {% if pagination.has_prev %}
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('main.all_games', page=pagination.prev_num,
+         q=search, genre=selected_genre, platform=selected_platform,
+         type=selected_type, sort=sort) }}">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+    </li>
+    {% endif %}
+
+    {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if p %}
+      <li class="page-item {% if p == pagination.page %}active{% endif %}">
+        <a class="page-link" href="{{ url_for('main.all_games', page=p,
+           q=search, genre=selected_genre, platform=selected_platform,
+           type=selected_type, sort=sort) }}">{{ p }}</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('main.all_games', page=pagination.next_num,
+         q=search, genre=selected_genre, platform=selected_platform,
+         type=selected_type, sort=sort) }}">
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="text-center py-5">
+  <i class="fa-solid fa-magnifying-glass fs-1 text-muted mb-3 d-block"></i>
+  <p class="text-muted fs-5">No games found matching your filters.</p>
+  <a href="{{ url_for('main.all_games') }}" class="btn btn-neon mt-2">Show All Games</a>
+</div>
+{% endif %}
+{% endblock %}

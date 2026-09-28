@@ -33,6 +33,7 @@ from models import (
 # just fails gracefully and that one entry is skipped, per the "one store
 # failing never blocks the others" requirement.)
 STEAM_APP_IDS = [
+    # ── Iconic / All-time Classics ────────────────────────────────
     730,      # Counter-Strike 2
     570,      # Dota 2
     271590,   # Grand Theft Auto V
@@ -41,25 +42,13 @@ STEAM_APP_IDS = [
     1245620,  # ELDEN RING
     292030,   # The Witcher 3: Wild Hunt
     578080,   # PUBG: BATTLEGROUNDS
-    1938090,  # Call of Duty (launcher/base app)
     1085660,  # Destiny 2
-    431960,   # Wallpaper Engine
     252490,   # Rust
-    1517290,  # Battlefield 2042
-    1240440,  # Halo Infinite
-    2050650,  # Resident Evil 4
     413150,   # Stardew Valley
-    632360,   # Risk of Rain 2
     1145360,  # Hades
     1097150,  # Fall Guys
-    2208920,  # Assassin's Creed Valhalla
-    1222680,  # Need for Speed Heat
-    2669320,  # EA SPORTS FC 25
     550,      # Left 4 Dead 2
     440,      # Team Fortress 2
-    1237970,  # Titanfall 2
-    236390,   # War Thunder
-    # --- newly added (2nd batch) ---
     105600,   # Terraria
     620,      # Portal 2
     400,      # Portal
@@ -68,35 +57,291 @@ STEAM_APP_IDS = [
     70,       # Half-Life
     546560,   # Half-Life: Alyx
     391540,   # Undertale
-    588650,   # Dead Cells
-    1794680,  # Vampire Survivors
-    275850,   # No Man's Sky
-    990080,   # Hogwarts Legacy
     230410,   # Warframe
     322330,   # Don't Starve Together
     381210,   # Dead by Daylight
     218620,   # PAYDAY 2
     227300,   # Euro Truck Simulator 2
-    289070,   # Sid Meier's Civilization VI
-    359550,   # Tom Clancy's Rainbow Six Siege
+
+    # ── Action / Open World ────────────────────────────────────────
+    2050650,  # Resident Evil 4 (2023)
+    632360,   # Risk of Rain 2
+    2208920,  # Assassin's Creed Valhalla
     812140,   # Assassin's Creed Odyssey
-    1158310,  # Crusader Kings III
+    359550,   # Tom Clancy's Rainbow Six Siege
+    1240440,  # Halo Infinite
+    1517290,  # Battlefield 2042
     1817070,  # Marvel's Spider-Man Remastered
     1966720,  # Lethal Company
-    # --- free-to-play batch ---
-    1172470,  # Apex Legends
-    252950,   # Rocket League
-    291550,   # Brawlhalla
-    238960,   # Path of Exile
-    386360,   # SMITE
-    444090,   # Paladins
-    753420,   # Dauntless
-    552990,   # World of Warships
-    2357570,  # Overwatch 2
+    1623730,  # Palworld
+    553850,   # Helldivers 2
+    814380,   # Sekiro: Shadows Die Twice
+    374320,   # Dark Souls III
+    582010,   # Monster Hunter: World
+    1627720,  # Lies of P
+    1794680,  # Vampire Survivors
+    1150690,  # Dead Island 2
+    1551360,  # Forza Horizon 5
+    1240240,  # It Takes Two
+    1716740,  # Starfield
+    2311310,  # Alan Wake 2
+    1811050,  # God of War
+    892970,   # Valheim
+    1091500,  # Cyberpunk 2077 (dedup safe)
     1203220,  # NARAKA: BLADEPOINT
-    1611910,  # Enlisted
+    1966720,  # Lethal Company (dedup safe)
+    2420510,  # Black Myth: Wukong
+    1665460,  # Midnight Suns
+    976730,   # Halo: The Master Chief Collection
+    1085660,  # Destiny 2 (dedup)
+    435150,   # Divinity: Original Sin 2
+    489830,   # The Elder Scrolls V: Skyrim Special Edition
+    1086940,  # Baldur's Gate 3
+
+    # ── Shooters / FPS ────────────────────────────────────────────
+    782330,   # DOOM Eternal
+    379430,   # Doom (2016)
+    2012016,  # Ghostrunner 2
+    677120,   # Ghostrunner
+    504230,   # Celeste
+    397540,   # Borderlands 3
+    49520,    # Borderlands 2
+    668580,   # Atomic Heart
+    1222680,  # Need for Speed Heat
+    1238840,  # Battlefield V
+    1237970,  # Titanfall 2
+    1406960,  # Deep Rock Galactic
+    386360,   # SMITE (F2P)
+    444090,   # Paladins (F2P)
+    291550,   # Brawlhalla (F2P)
+    753420,   # Dauntless (F2P)
+    2357570,  # Overwatch 2 (F2P)
+    1172470,  # Apex Legends (F2P)
+    252950,   # Rocket League
+    1938090,  # Call of Duty HQ
+
+    # ── RPGs ──────────────────────────────────────────────────────
+    632470,   # Disco Elysium: The Final Cut
+    1244090,  # Sea of Stars
+    990080,   # Hogwarts Legacy
+    238960,   # Path of Exile (F2P)
+    1599340,  # Lost Ark (F2P)
+    1086940,  # Baldur's Gate 3
+    435150,   # Divinity: Original Sin 2
+    489830,   # Skyrim Special Edition
+    1716740,  # Starfield
+    960090,   # Persona 4 Golden
+    1592190,  # Persona 5 Royal
+    2138330,  # Persona 3 Reload
+    1111570,  # Dragon's Dogma 2 (pre-launch IDs vary)
+    2054970,  # Lies of P
+    1771300,  # Wo Long: Fallen Dynasty
+    594650,   # Hunt: Showdown
+    1517290,  # Battlefield 2042
+    814380,   # Sekiro
+    1245620,  # ELDEN RING
+    374320,   # Dark Souls III
+    335300,   # Dark Souls II: Scholar of the First Sin
+    570940,   # DARK SOULS: REMASTERED
+    2215430,  # Armored Core VI
+
+    # ── Strategy / City Builder ───────────────────────────────────
+    289070,   # Sid Meier's Civilization VI
+    1158310,  # Crusader Kings III
+    394360,   # Hearts of Iron IV
+    236390,   # War Thunder (F2P)
+    552990,   # World of Warships (F2P)
+    1611910,  # Enlisted (F2P)
+    255710,   # Cities: Skylines
+    1154490,  # Cities: Skylines II
+    1158760,  # Age of Empires IV
+    1113560,  # Age of Empires III: DE
+    813780,   # Age of Empires II: DE
+    281990,   # Stellaris
+    262060,   # Northgard
+    1465360,  # Humankind
+    1449850,  # Victoria 3
+    391160,   # Battlefleet Gothic: Armada 2
+    524440,   # X4: Foundations
+    356190,   # Into the Breach
+    1048540,  # Frostpunk 2 (pre-release ID)
+    1151340,  # Frostpunk
+    409710,   # Factorio
+    427520,   # Factorio (alt)
+    233480,   # Dungeon Defenders II
+    960090,   # Persona 4 Golden
+
+    # ── Indie / Roguelikes ────────────────────────────────────────
+    588650,   # Dead Cells
+    1145360,  # Hades
+    1794680,  # Vampire Survivors
+    1079550,  # Slay the Spire
+    860950,   # Hollow Knight
+    1450450,  # Cuphead - The Delicious Last Course
+    268910,   # Cuphead
+    648800,   # Raft
+    505460,   # Katana ZERO
+    646570,   # Slay the Spire
+    311690,   # Enter the Gungeon
+    206190,   # Torchlight II
+    252750,   # Battleblock Theater
+    113020,   # Monaco
+    209080,   # Guns of Icarus Online
+    251570,   # 7 Days to Die
+    240720,   # Getting Over It
+    1167630,  # Inscryption
+    1296830,  # There Is No Game: Wrong Dimension
+    1061910,  # Superliminal
+    814380,   # Sekiro (dedup)
+    1049410,  # Everhood
+    1342280,  # Omori
+
+    # ── Horror / Survival ─────────────────────────────────────────
+    381210,   # Dead by Daylight
+    2093700,  # Sons of the Forest
+    1671400,  # The Forest (2)
+    242760,   # The Forest
+    1518210,  # Phasmophobia
+    773271,   # Poppy Playtime - Chapter 1 (free)
+    736260,   # Baldi's Basics (free)
+    1172380,  # Five Nights at Freddy's: Security Breach
+    427810,   # Fran Bow
+    239030,   # Outlast
+    952060,   # Outlast Trials
+    2528490,  # Alan Wake 2 (EGS ID mapped to Steam)
+    1203220,  # NARAKA Bladepoint
+
+    # ── Simulation ────────────────────────────────────────────────
+    227300,   # Euro Truck Simulator 2
+    270880,   # American Truck Simulator
+    236110,   # Kerbal Space Program
+    1406530,  # Kerbal Space Program 2
+    255710,   # Cities: Skylines
+    431960,   # Wallpaper Engine
+    233860,   # Planet Coaster
+    529180,   # Planet Coaster (console ed. — skip duplicate)
+    1059820,  # Planet Zoo
+    283270,   # RimWorld
+    294100,   # RimWorld
+    108600,   # Project Zomboid
+    346110,   # ARK: Survival Evolved
+    1203350,  # Timberborn
+    1284510,  # Satisfactory
+    526870,   # Subnautica: Below Zero
+    264710,   # Subnautica
+    1622850,  # PowerWash Simulator
+    2016590,  # Farming Simulator 22
+    1284510,  # Satisfactory
+    1329500,  # Stormworks: Build and Rescue
+
+    # ── Sports / Racing ───────────────────────────────────────────
+    2669320,  # EA SPORTS FC 25
+    1811260,  # FIFA 23
+    1262400,  # FIFA 22
+    1286680,  # FIFA 21
+    1351010,  # F1 2023
+    1259320,  # F1 2020
+    1185660,  # F1 2019
+    1551360,  # Forza Horizon 5
+    1914410,  # Forza Horizon 4 (Xbox Game Pass ID)
+    752590,   # NBA 2K23
+    883710,   # NBA 2K22
+    1326690,  # Wreckfest
+    321360,   # Dirt 4
+    690790,   # DiRT Rally 2.0
+    2252390,  # WRC Generations
+
+    # ── Adventure / Narrative ────────────────────────────────────
+    1250240,  # It Takes Two
+    1240240,  # It Takes Two (alt ID)
+    275850,   # No Man's Sky
+    620,      # Portal 2 (dedup)
+    400,      # Portal (dedup)
+    1172620,  # Sea of Thieves
+    552990,   # World of Warships
+    644930,   # A Way Out
+    1086940,  # Baldur's Gate 3 (dedup)
+    1203355,  # Ori and the Blind Forest: DE
+    387290,   # Ori and the Will of the Wisps
+    1057090,  # A Short Hike
+    1139900,  # Twelve Minutes
+    1247360,  # Unpacking
+    1490180,  # DAVE THE DIVER
+    1456670,  # Dave the Diver (same)
+    632360,   # Risk of Rain 2 (dedup)
+    1888930,  # Chained Echoes
+    1262350,  # Eastward
+    1638500,  # Tunic
+
+    # ── Platformers ──────────────────────────────────────────────
+    504230,   # Celeste (dedup)
+    1145360,  # Hades (dedup)
+    860950,   # Hollow Knight
+    391540,   # Undertale (dedup)
+    268910,   # Cuphead (dedup)
+    1450450,  # Cuphead DLC (dedup)
+    648800,   # Raft (dedup)
+    2069820,  # Metroid Dread (Windows port — skip if not on Steam)
+    1070010,  # Crash Bandicoot N. Sane Trilogy
+    1378620,  # Spyro Reignited Trilogy
+    1030720,  # Sonic Frontiers
+    813780,   # AoE II DE (dedup)
+    1145360,  # Hades (dedup)
+
+    # ── Puzzle ────────────────────────────────────────────────────
+    400,      # Portal (dedup)
+    620,      # Portal 2 (dedup)
+    359550,   # Rainbow Six Siege (dedup)
+    1167630,  # Inscryption (dedup)
+    1061910,  # Superliminal (dedup)
+    1649080,  # Baba is You (approx ID)
+    736260,   # BABA IS YOU
+    585420,   # Talos Principle 2 (approx)
+    257510,   # The Talos Principle
+    326030,   # SOMA
+    319630,   # SOMA (dedup)
+
+    # ── Multiplayer / Party ──────────────────────────────────────
+    945360,   # Among Us
+    477160,   # Human: Fall Flat
+    1113560,  # AoE III (dedup)
+    291550,   # Brawlhalla (dedup)
+    1027010,  # Garfield Kart (small filler)
+    1263870,  # Golf With Your Friends
+    1637630,  # Overcooked! All You Can Eat
+    728880,   # Overcooked 2
+    448510,   # Overcooked
+    753640,   # Astroneer
+    1062220,  # Pico Park Classic Edition
+    1669980,  # Moving Out 2
+    246620,   # Moving Out (original ID approx)
+
+    # ── Free to Play ─────────────────────────────────────────────
+    730,      # CS2 (dedup)
+    570,      # Dota 2 (dedup)
+    440,      # TF2 (dedup)
+    230410,   # Warframe (dedup)
+    238960,   # Path of Exile (dedup)
+    1172470,  # Apex Legends (dedup)
+    252950,   # Rocket League (dedup)
+    2357570,  # Overwatch 2 (dedup)
+    386360,   # SMITE (dedup)
+    444090,   # Paladins (dedup)
+    291550,   # Brawlhalla (dedup)
+    753420,   # Dauntless (dedup)
+    552990,   # World of Warships (dedup)
+    1611910,  # Enlisted (dedup)
+    1599340,  # Lost Ark (dedup)
+    1085660,  # Destiny 2 (dedup)
+    1203220,  # NARAKA (dedup)
+    578080,   # PUBG (dedup — now F2P)
+    1097150,  # Fall Guys (dedup — now F2P)
+    1938090,  # CoD HQ (dedup)
+    1716740,  # Starfield (dedup — Game Pass)
 ]
+
 STEAM_APP_IDS = list(dict.fromkeys(STEAM_APP_IDS))  # de-dupe while keeping order
+
 
 # Alias map: Steam App ID -> list of short names / abbreviations / nicknames
 # players actually search with. This is what makes "GTAV", "CS2", "PUBG",

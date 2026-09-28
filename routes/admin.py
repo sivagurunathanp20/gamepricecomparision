@@ -145,9 +145,10 @@ def game_edit(game_id):
     if request.method == "POST":
         game.title = request.form.get("title", game.title)
         game.description = request.form.get("description", game.description)
-        manual_cover = request.form.get("cover_image", "").strip()
-        game.steam_app_id = request.form.get("steam_app_id", type=int)
-        game.cover_image = manual_cover or game.cover_image
+        if manual_cover:
+            game.cover_image = manual_cover
+        elif not game.cover_image or game.cover_image.startswith("/static/img/placeholder"):
+            game.cover_image = resolve_game_image(steam_app_id=game.steam_app_id, verify=False) or game.cover_image
         game.developer = request.form.get("developer", game.developer)
         game.publisher = request.form.get("publisher", game.publisher)
         game.rating = request.form.get("rating", type=float) or game.rating

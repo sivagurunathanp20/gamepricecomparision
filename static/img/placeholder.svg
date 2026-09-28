@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0d14"/>
+      <stop offset="50%" stop-color="#121824"/>
+      <stop offset="100%" stop-color="#0d111a"/>
+    </linearGradient>
+    <linearGradient id="neonGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f5ff" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#7928ca" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ff0080" stop-opacity="0.8"/>
+    </linearGradient>
+    <radialGradient id="centerGlow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#00f5ff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#00f5ff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.03)" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="900" fill="url(#bgGrad)"/>
+  <rect width="600" height="900" fill="url(#grid)"/>
+  <circle cx="300" cy="400" r="220" fill="url(#centerGlow)"/>
+
+  <!-- Border Frame -->
+  <rect x="20" y="20" width="560" height="860" rx="16" fill="none" stroke="rgba(0, 245, 255, 0.15)" stroke-width="2"/>
+  <rect x="28" y="28" width="544" height="844" rx="12" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/>
+
+  <!-- Top Accent Bar -->
+  <rect x="220" y="20" width="160" height="3" fill="url(#neonGlow)" rx="1.5"/>
+
+  <!-- Gamepad Icon -->
+  <g transform="translate(300, 390) scale(1.4)" text-anchor="middle">
+    <!-- Gamepad Outer Body -->
+    <path d="M -60,-20 C -75,-20 -95,5 -95,45 C -95,75 -75,90 -55,85 C -40,80 -30,55 -20,40 C -10,30 10,30 20,40 C 30,55 40,80 55,85 C 75,90 95,75 95,45 C 95,5 75,-20 60,-20 Z" 
+          fill="#161e2e" stroke="url(#neonGlow)" stroke-width="3.5" stroke-linejoin="round"/>
+
+    <!-- D-Pad (Left) -->
+    <g fill="#00f5ff" opacity="0.9">
+      <rect x="-64" y="10" width="8" height="24" rx="2"/>
+      <rect x="-72" y="18" width="24" height="8" rx="2"/>
+    </g>
+
+    <!-- Action Buttons (Right) -->
+    <circle cx="58" cy="14" r="4.5" fill="#ff0080"/>
+    <circle cx="68" cy="22" r="4.5" fill="#00f5ff"/>
+    <circle cx="48" cy="22" r="4.5" fill="#7928ca"/>
+    <circle cx="58" cy="30" r="4.5" fill="#00ff88"/>
+
+    <!-- Center Thumbsticks / Accents -->
+    <circle cx="-22" cy="42" r="10" fill="#0f141f" stroke="#00f5ff" stroke-width="2" opacity="0.7"/>
+    <circle cx="22" cy="42" r="10" fill="#0f141f" stroke="#7928ca" stroke-width="2" opacity="0.7"/>
+  </g>
+
+  <!-- Brand Title -->
+  <text x="300" y="570" text-anchor="middle" font-family="'Segoe UI', Roboto, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#ffffff" letter-spacing="4">
+    GAME<tspan fill="#00f5ff">VAULT</tspan>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="300" y="605" text-anchor="middle" font-family="'Segoe UI', Roboto, Helvetica, sans-serif" font-size="14" font-weight="500" fill="rgba(255, 255, 255, 0.45)" letter-spacing="2">
+    COVER ART COMING SOON
+  </text>
+
+  <!-- Bottom Accent Bar -->
+  <rect x="250" y="877" width="100" height="3" fill="url(#neonGlow)" rx="1.5"/>
+</svg>

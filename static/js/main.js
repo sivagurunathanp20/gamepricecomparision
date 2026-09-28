@@ -3,6 +3,28 @@
 // Theme toggle, AJAX live search, countdown timers, wishlist actions
 // ===================================================================
 
+// Global Image Fallback Handler: catch any broken images across the whole app
+window.addEventListener(
+  "error",
+  (e) => {
+    if (e.target && e.target.tagName === "IMG") {
+      const img = e.target;
+      if (!img.dataset.fallbackStep) {
+        img.dataset.fallbackStep = "1";
+        if (img.src && img.src.includes("library_600x900.jpg")) {
+          img.src = img.src.replace("library_600x900.jpg", "header.jpg");
+        } else {
+          img.src = "/static/img/placeholder.svg";
+        }
+      } else if (img.dataset.fallbackStep === "1") {
+        img.dataset.fallbackStep = "2";
+        img.src = "/static/img/placeholder.svg";
+      }
+    }
+  },
+  true
+);
+
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initNavSearch();

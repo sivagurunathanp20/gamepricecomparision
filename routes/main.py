@@ -22,25 +22,33 @@ def home():
         .order_by(Deal.discount_percent.desc())
         .first()
     )
-    # Only trending games that have a verified price (or are free-to-play) — avoid showing
-    # "Unable to verify price" cards in a section that should inspire confidence.
-    cutoff = datetime.utcnow() - timedelta(minutes=current_app.config["PRICE_MAX_AGE_MINUTES"])
-    _verified_game_ids = db.session.query(GamePlatform.game_id).filter(
-        or_(
-            db.and_(
-                GamePlatform.verify_status == "verified",
-                GamePlatform.current_price.isnot(None),
-                GamePlatform.last_verified_at >= cutoff,
-            ),
-            Game.is_free_to_play == True,
+    # Trending: only show games that have at least one officially-verified,
+    # fresh price so every card shows a real number, not "Price not fetched yet".
+    cutoff = datetime.utcnow() - timedelta(minutes=current_app.config.get("PRICE_MAX_AGE_MINUTES", 720))
+    _verified_game_ids_q = (
+        db.session.query(GamePlatform.game_id)
+        .join(Edition, Edition.listing_id == GamePlatform.id)
+        .filter(
+            GamePlatform.verify_status == "verified",
+            GamePlatform.last_verified_at >= cutoff,
+            Edition.current_price.isnot(None),
+            Edition.is_available.is_(True),
+            Edition.url_verified_at.isnot(None),
         )
-    ).join(Game, Game.id == GamePlatform.game_id).subquery()
-    trending = (
-        Game.query
-        .filter(or_(Game.id.in_(db.session.query(_verified_game_ids)), Game.is_free_to_play == True))
-        .order_by(Game.popularity_score.desc())
-        .limit(8).all()
     )
+    # Fall back to all games if no verified data exists yet (e.g. first run).
+    _has_verified = db.session.query(GamePlatform.id).filter(
+        GamePlatform.verify_status == "verified"
+    ).limit(1).scalar() is not None
+    _verified_ids = [r[0] for r in _verified_game_ids_q.all()] if _has_verified else None
+
+    trending_q = Game.query.order_by(Game.popularity_score.desc())
+    if _verified_ids is not None:
+        # Also include free-to-play games even if not in the verified list
+        trending_q = trending_q.filter(
+            or_(Game.id.in_(_verified_ids), Game.is_free_to_play.is_(True))
+        )
+    trending = trending_q.limit(8).all()
     # Biggest discounts — one entry per game, showing its highest discount.
     # Deduplicated in Python so it works with SQLite (DISTINCT ON is PG-only).
     _all_discounts = (
@@ -112,12 +120,13 @@ def home():
         biggest_discounts = biggest_discounts[:8]
 
     free_games = Game.query.filter_by(is_free_to_play=True).limit(6).all()
-    top_rated = (
-        Game.query
-        .filter(or_(Game.id.in_(db.session.query(_verified_game_ids)), Game.is_free_to_play == True))
-        .order_by(Game.rating.desc())
-        .limit(8).all()
-    )
+    # Top Rated: same verified-only filter as Trending.
+    top_rated_q = Game.query.order_by(Game.rating.desc())
+    if _verified_ids is not None:
+        top_rated_q = top_rated_q.filter(
+            or_(Game.id.in_(_verified_ids), Game.is_free_to_play.is_(True))
+        )
+    top_rated = top_rated_q.limit(8).all()
 
     return render_template(
         "index.html",
@@ -168,10 +177,17 @@ def compare():
     offers = offer_q.group_by(GamePlatform.game_id).subquery()
     query = query.outerjoin(offers, offers.c.gid == Game.id)
 
-    # accuracy over coverage: a game with no verified price is hidden
-    # (unless SHOW_UNVERIFIED_GAMES=1, and never when filtering by store)
-    if platform or not current_app.config["SHOW_UNVERIFIED_GAMES"]:
+    # Strict mode: hide games with no verified price — BUT fall back to showing
+    # all games when NO verified data exists yet (e.g. before the price scraper
+    # has run for the first time), so the page is never completely empty.
+    from extensions import db as _db
+    has_any_verified = _db.session.query(GamePlatform.id).filter(
+        GamePlatform.verify_status == "verified"
+    ).limit(1).scalar() is not None
+
+    if platform or (has_any_verified and not current_app.config["SHOW_UNVERIFIED_GAMES"]):
         query = query.filter(offers.c.gid.isnot(None))
+
 
     if sort == "price_low":
         query = query.order_by(offers.c.min_price.is_(None), offers.c.min_price.asc())
@@ -340,3 +356,110 @@ def api_search():
             for g in results
         ]
     )
+
+
+@main_bp.route("/games")
+def all_games():
+    """Browse every game in the catalogue using the same card style as
+    Home / Deals / Free Games."""
+    search          = request.args.get("q", "").strip()
+    selected_genre  = request.args.get("genre", "")
+    selected_platform = request.args.get("platform", "")
+    selected_type   = request.args.get("type", "all")
+    sort            = request.args.get("sort", "popularity")
+    page            = request.args.get("page", 1, type=int)
+
+    query = Game.query
+
+    # ── Text search ───────────────────────────────────────────────
+    if search:
+        from search import search_games
+        matched_ids = [g.id for g in search_games(search, limit=200)]
+        query = query.filter(Game.id.in_(matched_ids)) if matched_ids else query.filter(Game.id.is_(None))
+
+    # ── Genre filter ──────────────────────────────────────────────
+    if selected_genre:
+        query = query.join(Category).filter(Category.slug == selected_genre)
+
+    # ── Platform filter ───────────────────────────────────────────
+    if selected_platform:
+        query = (query
+                 .join(GamePlatform, GamePlatform.game_id == Game.id)
+                 .join(Platform, Platform.id == GamePlatform.platform_id)
+                 .filter(Platform.name == selected_platform)
+                 .distinct())
+
+    # ── Type filter ───────────────────────────────────────────────
+    if selected_type == "free":
+        query = query.filter(Game.is_free_to_play == True)   # noqa: E712
+    elif selected_type == "paid":
+        query = query.filter(Game.is_free_to_play == False)  # noqa: E712
+    elif selected_type == "deals":
+        now = datetime.utcnow()
+        deal_game_ids = db.session.query(Deal.game_id).filter(
+            or_(Deal.expires_at.is_(None), Deal.expires_at > now),
+            Deal.deal_type == "discount",
+        )
+        query = query.filter(Game.id.in_(deal_game_ids))
+
+    # ── Price subquery (for price-based sorting only) ─────────────
+    # The All Games page shows every game in the catalogue regardless of
+    # verification status — the verified-price restriction belongs on
+    # /compare (price comparison), not here.
+    all_cutoff = datetime.utcnow() - timedelta(minutes=current_app.config.get("PRICE_MAX_AGE_MINUTES", 720))
+    all_offer_q = (
+        db.session.query(
+            GamePlatform.game_id.label("gid"),
+            func.min(Edition.current_price).label("min_price"),
+            func.max(Edition.discount_percent).label("max_disc"),
+        )
+        .join(Edition, Edition.listing_id == GamePlatform.id)
+        .filter(
+            GamePlatform.verify_status == "verified",
+            GamePlatform.last_verified_at >= all_cutoff,
+            Edition.current_price.isnot(None),
+            Edition.is_available.is_(True),
+            Edition.url_verified_at.isnot(None),
+        )
+    )
+    if selected_platform:
+        all_offer_q = (all_offer_q
+                       .join(Platform, Platform.id == GamePlatform.platform_id)
+                       .filter(Platform.name == selected_platform))
+    all_offers = all_offer_q.group_by(GamePlatform.game_id).subquery()
+    query = query.outerjoin(all_offers, all_offers.c.gid == Game.id)
+
+    # ── Sorting ───────────────────────────────────────────────────
+    if sort == "rating":
+        query = query.order_by(Game.rating.desc())
+    elif sort == "price_low":
+        query = query.order_by(all_offers.c.min_price.is_(None), all_offers.c.min_price.asc())
+    elif sort == "price_high":
+        query = query.order_by(all_offers.c.min_price.is_(None), all_offers.c.min_price.desc())
+    elif sort == "discount":
+        query = query.order_by(all_offers.c.max_disc.is_(None), all_offers.c.max_disc.desc())
+    elif sort == "newest":
+        query = query.order_by(Game.created_at.desc())
+    elif sort == "az":
+        query = query.order_by(Game.title.asc())
+    else:  # popularity (default)
+        query = query.order_by(Game.popularity_score.desc())
+
+    pagination = query.paginate(page=page, per_page=24, error_out=False)
+
+    categories = Category.query.order_by(Category.name).all()
+    platforms  = Platform.query.order_by(Platform.name).all()
+
+    return render_template(
+        "all_games.html",
+        games=pagination.items,
+        pagination=pagination,
+        categories=categories,
+        platforms=platforms,
+        search=search,
+        selected_genre=selected_genre,
+        selected_platform=selected_platform,
+        selected_type=selected_type,
+        sort=sort,
+    )
+

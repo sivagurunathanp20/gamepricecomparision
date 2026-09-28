@@ -12,7 +12,7 @@
     <tbody>
       {% for game in games %}
       <tr>
-        <td><img loading="lazy" src="{{ game.cover_image }}" style="width:36px;height:48px;object-fit:cover;border-radius:6px;"></td>
+        <td><img loading="lazy" src="{{ game.cover_image or '/static/img/placeholder.svg' }}" onerror="this.onerror=null;this.src='/static/img/placeholder.svg';" style="width:36px;height:48px;object-fit:cover;border-radius:6px;"></td>
         <td>{{ game.title }}</td>
         <td>{{ game.category.name if game.category else '-' }}</td>
         <td class="rating-stars">★ {{ '%.1f'|format(game.rating) }}</td>

@@ -136,7 +136,16 @@ def init_scheduler(app):
     Register and start background jobs.  Safe to call multiple times —
     APScheduler's running check prevents double-registration in Flask's
     debug reloader (which forks the process).
+
+    On Vercel (serverless) background threads are not supported, so the
+    scheduler is skipped when the DISABLE_SCHEDULER environment variable
+    is set to "1".
     """
+    import os
+    if os.environ.get("DISABLE_SCHEDULER", "0") == "1" or os.environ.get("VERCEL"):
+        logger.info("[scheduler] disabled via DISABLE_SCHEDULER/VERCEL env var (serverless mode).")
+        return
+
     if scheduler.running:
         return  # already started (e.g. Flask debug reloader second process)
 
@@ -154,7 +163,7 @@ def init_scheduler(app):
     )
 
     # Discover new free-games / deals — every 3 hours, first run 90 s after
-    # startup (staggered after sync_prices' 60 s so they don't overlap).
+    # startup (staggered after sync_prices' 60 s so they don't overlap)
     scheduler.add_job(
         func=job_discover_new_deals,
         args=[app],

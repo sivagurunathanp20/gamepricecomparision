@@ -103,7 +103,7 @@ _STORE_HOMEPAGE_URLS = {
     "DreamGame":         "https://www.dreamgame.com/",
 }
 
-PLACEHOLDER_IMAGE = "https://placehold.co/500x700/1a1a2e/ffffff?text=No+Image"
+PLACEHOLDER_IMAGE = "/static/img/placeholder.svg"
 
 
 def _normalize_url(url):
@@ -253,14 +253,15 @@ def _url_is_reachable(url):
 
 def resolve_game_image(steam_app_id=None, fallback_url=None, verify=True):
     """Best available image for a game, in priority order:
-    Steam library cover -> Steam header -> fallback_url -> placeholder.
-    Set verify=False to skip the HEAD request (faster, less accurate —
-    fine for bulk seeding where you already trust the App ID)."""
+    Steam library cover -> Steam header -> Steam capsule -> fallback_url -> placeholder."""
     if steam_app_id:
         urls = steam_image_urls(steam_app_id)
-        for key in ("library", "header"):
+        for key in ("library", "header", "capsule"):
             candidate = urls.get(key)
             if candidate and (not verify or _url_is_reachable(candidate)):
+                # If verify is False, check if library is reachable, else fall back to header
+                if not verify and key == "library" and not _url_is_reachable(candidate):
+                    continue
                 return candidate
 
     if fallback_url:

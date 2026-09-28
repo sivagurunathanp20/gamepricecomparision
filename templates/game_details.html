@@ -5,7 +5,8 @@
 <div class="row g-4">
   <div class="col-lg-4">
     <div class="glass p-3">
-      <img loading="lazy" src="{{ game.cover_image }}" class="w-100 rounded mb-3" style="aspect-ratio:5/4;object-fit:cover;">
+      <img loading="lazy" src="{{ game.cover_image or '/static/img/placeholder.svg' }}" class="w-100 rounded mb-3" style="aspect-ratio:5/4;object-fit:cover;"
+           onerror="this.onerror=null;this.src='/static/img/placeholder.svg';">
       <h2 class="fw-bold">{{ game.title }}</h2>
       <div class="rating-stars mb-2">★★★★★ <span class="text-muted small">{{ '%.1f'|format(game.rating) }}/5</span></div>
       <p class="small text-muted mb-1"><strong>Developer:</strong> {{ game.developer }}</p>
@@ -48,8 +49,8 @@
               <tr {% if game.best_offer and game.best_offer[1].id == ed.id %}style="outline:1px solid var(--neon-lime);"{% endif %}>
                 <td>{{ ed.name }}{% if game.best_offer and game.best_offer[1].id == ed.id %} <span class="badge badge-soft-lime ms-1"><i class="fa-solid fa-star me-1"></i>Lowest</span>{% endif %}</td>
                 {% if ed.price_is_trusted %}
-                  <td class="text-muted">{% if ed.discount_percent %}<span class="text-decoration-line-through">{{ ed.original_price|official_price(ed.currency) }}</span>{% else %}—{% endif %}</td>
-                  <td class="fw-bold price-now">{{ ed.current_price|official_price(ed.currency) }}</td>
+                  <td class="text-muted">{% if ed.discount_percent %}<span class="text-decoration-line-through">{{ ed.original_price|currency(ed.currency) }}</span>{% else %}—{% endif %}</td>
+                  <td class="fw-bold price-now">{{ ed.current_price|currency(ed.currency) }}</td>
                   <td>{% if ed.discount_percent %}<span class="badge badge-soft-magenta">-{{ ed.discount_percent }}%</span>{% else %}—{% endif %}</td>
                   <td><a href="{{ ed.purchase_url }}" class="btn btn-neon btn-sm buy-btn" target="_blank" rel="noopener noreferrer">Buy on {{ listing.platform.name }}</a></td>
                 {% else %}

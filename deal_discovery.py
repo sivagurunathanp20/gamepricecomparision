@@ -150,6 +150,12 @@ def _upsert_free_deal(game, platform, expires_at, store_url=None, deal_type="fre
         listing = GamePlatform(game_id=game.id, platform_id=platform.id)
         db.session.add(listing)
     listing.source = "auto-discovery"
+    # Mark the listing as free immediately so _deal_is_verified() can pass
+    # (current_price == 0 is the check). The official-price verifier will
+    # overwrite this with a properly verified 0 if/when it runs.
+    if listing.current_price is None:
+        listing.current_price = 0
+        listing.discount_percent = 100
 
     return deal, True
 

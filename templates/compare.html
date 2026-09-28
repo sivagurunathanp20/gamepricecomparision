@@ -75,7 +75,8 @@
       <tr>
         <td style="min-width:200px;">
           <div class="d-flex align-items-center gap-2">
-            <img loading="lazy" src="{{ game.cover_image }}"
+            <img loading="lazy" src="{{ game.cover_image or '/static/img/placeholder.svg' }}"
+              onerror="this.onerror=null;this.src='/static/img/placeholder.svg';"
               style="width:44px;height:58px;object-fit:cover;border-radius:6px;">
             <div>
               <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="fw-semibold text-decoration-none"
@@ -97,7 +98,7 @@
               {% if listing.current_price is none %}
               <span class="text-muted">Checking…</span>
               {% else %}
-              {{ listing.current_price|official_price(listing.price_currency) }}{% if listing.discount_percent %} <span
+              {{ listing.current_price|currency(listing.price_currency) }}{% if listing.discount_percent %} <span
                 style="color:var(--neon-magenta)">(-{{ listing.discount_percent }}%)</span>{% endif %}
               {% endif %}
               {% if game.best_price and listing.id==game.best_price.id %} <i class="fa-solid fa-star"
@@ -109,7 +110,7 @@
         <td>
           {% if game.best_price %}
           <span class="fw-bold" style="color:#ffd700">{{
-            game.best_price.current_price|official_price(game.best_price.price_currency) }}</span>
+            game.best_price.current_price|currency(game.best_price.price_currency) }}</span>
           <div class="small text-muted">{{ game.best_price.platform.name }}</div>
           {% else %}
           <span class="text-muted small">N/A</span>

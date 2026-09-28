@@ -199,8 +199,8 @@ change, one button.
    `https://yourdomain.com/auth/google/callback`)
 4. Copy the generated **Client ID** and **Client Secret** into `.env`:
    ```
-   GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-   GOOGLE_CLIENT_SECRET=your-client-secret
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
    ```
 5. Restart the app. A "Sign in with Google" button now appears on the
    Login and Register pages automatically — no code changes needed. If

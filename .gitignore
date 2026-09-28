@@ -8,3 +8,5 @@ instance/
 .DS_Store
 sync_log.txt
 .env.local
+.vercel
+google auth.txt

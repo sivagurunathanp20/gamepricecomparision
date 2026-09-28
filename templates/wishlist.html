@@ -10,11 +10,13 @@
   <div class="col-md-6 col-lg-4">
     <div class="glass p-3 h-100">
       <div class="d-flex gap-3">
-        <img loading="lazy" src="{{ item.game.cover_image }}" style="width:70px;height:94px;object-fit:cover;border-radius:8px;">
+        <img loading="lazy" src="{{ item.game.cover_image or '/static/img/placeholder.svg' }}" 
+             onerror="this.onerror=null;this.src='/static/img/placeholder.svg';"
+             style="width:70px;height:94px;object-fit:cover;border-radius:8px;">
         <div class="flex-grow-1">
           <a href="{{ url_for('main.game_details', slug=item.game.slug) }}" class="fw-semibold text-decoration-none" style="color:var(--text-primary)">{{ item.game.title }}</a>
           <div class="small text-muted">
-            Current best: {{ item.game.best_price.current_price|official_price(item.game.best_price.price_currency) if item.game.best_price else 'Unable to verify price' }}
+            Current best: {{ item.game.best_price.current_price|currency(item.game.best_price.price_currency) if item.game.best_price else 'Unable to verify price' }}
           </div>
         </div>
       </div>

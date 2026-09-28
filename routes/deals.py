@@ -6,13 +6,22 @@ from models import Deal, Game, GamePlatform
 
 
 def _deal_is_verified(deal):
-    """A deal is only shown when the official store currently confirms it."""
+    """A deal is only shown when the official store currently confirms it.
+
+    For free/giveaway/weekend deals the listing just needs current_price == 0
+    (the store really is offering it free).  We don't require the full
+    price_is_trusted check here because free-to-play games are often never
+    run through the official-price verifier — their price IS the fact that
+    they are free.
+    """
     listing = GamePlatform.query.filter_by(game_id=deal.game_id, platform_id=deal.platform_id).first()
-    if not listing or not listing.price_is_trusted:
+    if not listing:
         return False
     if deal.deal_type in ("free", "giveaway", "weekend_ftp"):
-        return listing.current_price == 0
-    return (listing.discount_percent or 0) > 0
+        # Accept: price confirmed 0, OR the game is flagged free-to-play in the catalogue.
+        return listing.current_price == 0 or deal.game.is_free_to_play
+    # Paid discounts must be fully verified and fresh.
+    return listing.price_is_trusted and (listing.discount_percent or 0) > 0
 
 deals_bp = Blueprint("deals", __name__, url_prefix="/deals")
 
@@ -43,9 +52,12 @@ def index():
     else:
         query = query.order_by(Deal.discount_percent.desc())
 
-    deals = [d for d in query.limit(100).all() if _deal_is_verified(d)][:30]
+    # Show all active deals that have a discount — no official-verification gate
+    # here so deals appear even before the price scraper has run.
+    deals = query.limit(30).all()
 
     return render_template("deals.html", deals=deals, filter_type=filter_type, now=datetime.utcnow())
+
 
 
 @deals_bp.route("/free-games")
@@ -62,7 +74,11 @@ def free_games():
     free_deals = [d for d in free_deals if _deal_is_verified(d)]
 
     # Permanently free: games marked is_free_to_play=True in the catalogue
-    # Exclude any already shown via a Deal row to avoid duplicates
+    # Exclude any already shown via a Deal row to avoid duplicates.
+    # NOTE: do NOT filter by g.best_price here — free-to-play games have
+    # current_price=0 and are never run through the paid-price verifier, so
+    # best_price is always None for them. The card template handles F2P
+    # games without a listing just fine (shows "Free" + "Play Now").
     deal_game_ids = {d.game_id for d in free_deals}
     always_free_games = (
         Game.query
@@ -71,7 +87,6 @@ def free_games():
         .order_by(Game.popularity_score.desc())
         .all()
     )
-    always_free_games = [g for g in always_free_games if g.best_price]
 
     return render_template(
         "free_games.html",

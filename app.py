@@ -4,7 +4,7 @@ from sqlalchemy import inspect, text
 
 from config import Config
 from extensions import db, login_manager, bcrypt, mail, oauth
-from models import User
+from models import User, Game
 from scheduler import init_scheduler
 
 
@@ -61,7 +61,12 @@ def _ensure_price_verification_columns():
 
 
 def create_app(config_class=Config):
-    app = Flask(__name__)
+    import os
+    app = Flask(
+        __name__,
+        template_folder=os.path.join(Config.BASE_DIR, "templates"),
+        static_folder=os.path.join(Config.BASE_DIR, "static"),
+    )
     app.config.from_object(config_class)
 
     db.init_app(app)
@@ -82,9 +87,15 @@ def create_app(config_class=Config):
         )
 
     with app.app_context():
-        db.create_all()          # auto-create tables on Railway (PostgreSQL starts empty)
-        _ensure_google_auth_columns()
-        _ensure_price_verification_columns()
+        try:
+            db.create_all()          # auto-create tables on remote DB / sqlite
+            _ensure_google_auth_columns()
+            _ensure_price_verification_columns()
+            if Game.query.first() is None:
+                from seed import populate_seed_data
+                populate_seed_data(drop=False)
+        except Exception as e:
+            app.logger.warning("Startup DB init check: %s", e)
 
     from routes.auth import auth_bp
     from routes.main import main_bp

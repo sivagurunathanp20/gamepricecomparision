@@ -8,6 +8,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
+    BASE_DIR = BASE_DIR
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
 
     # ------------------------------------------------------------------
@@ -21,10 +22,21 @@ class Config:
     # provided in database/schema.sql if you want to create the DB by hand
     # instead of letting SQLAlchemy create the tables.
     # ------------------------------------------------------------------
-    # Railway / Heroku supply DATABASE_URL as "postgres://..." but SQLAlchemy
-    # requires "postgresql://...". Fix it transparently here.
-    _db_url = os.environ.get("DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'game_deals.db')}")
-    if _db_url.startswith("postgres://"):
+    _db_url = os.environ.get("DATABASE_URL")
+    if not _db_url:
+        if os.environ.get("VERCEL"):
+            tmp_db = "/tmp/game_deals.db"
+            orig_db = os.path.join(BASE_DIR, "game_deals.db")
+            if not os.path.exists(tmp_db) and os.path.exists(orig_db):
+                import shutil
+                try:
+                    shutil.copy2(orig_db, tmp_db)
+                except Exception:
+                    pass
+            _db_url = f"sqlite:///{tmp_db}"
+        else:
+            _db_url = f"sqlite:///{os.path.join(BASE_DIR, 'game_deals.db')}"
+    elif _db_url.startswith("postgres://"):
         _db_url = _db_url.replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_DATABASE_URI = _db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
