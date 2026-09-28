@@ -33,12 +33,13 @@ class Config:
         if os.environ.get("VERCEL"):
             tmp_db = "/tmp/game_deals.db"
             orig_db = os.path.join(BASE_DIR, "game_deals.db")
-            if not os.path.exists(tmp_db) and os.path.exists(orig_db):
-                import shutil
-                try:
-                    shutil.copy2(orig_db, tmp_db)
-                except Exception:
-                    pass
+            if os.path.exists(orig_db):
+                if not os.path.exists(tmp_db) or os.path.getsize(tmp_db) < os.path.getsize(orig_db):
+                    import shutil
+                    try:
+                        shutil.copy2(orig_db, tmp_db)
+                    except Exception:
+                        pass
             _db_url = f"sqlite:///{tmp_db}"
         else:
             _db_url = f"sqlite:///{os.path.join(BASE_DIR, 'game_deals.db')}"
