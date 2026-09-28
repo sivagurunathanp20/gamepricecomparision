@@ -25,7 +25,10 @@ class VercelPathMiddleware:
         )
         if matched:
             if "?" in matched:
-                matched = matched.split("?", 1)[0]
+                parts = matched.split("?", 1)
+                matched = parts[0]
+                if len(parts) > 1 and not environ.get("QUERY_STRING"):
+                    environ["QUERY_STRING"] = parts[1]
             if matched and matched not in ("/api/index", "/api", "/api/index.py"):
                 environ["PATH_INFO"] = matched
 

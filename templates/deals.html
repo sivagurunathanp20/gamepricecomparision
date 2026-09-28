@@ -26,7 +26,7 @@
           onerror="this.onerror=null;this.src='/static/img/placeholder.svg';"
           style="width:70px;height:94px;object-fit:cover;border-radius:8px;">
         <div class="flex-grow-1">
-          <div class="fw-semibold">{{ deal.game.title }}</div>
+          <a href="{{ url_for('main.game_details', slug=deal.game.slug) }}" class="game-title-link fw-semibold d-block text-truncate" title="{{ deal.game.title }}">{{ deal.game.title }}</a>
           <div class="small text-muted mb-1">{{ deal.platform.name }}</div>
           <span class="badge badge-soft-magenta">-{{ deal.discount_percent }}%</span>
           {% if deal.is_featured %}<span class="badge badge-soft-lime ms-1">Featured</span>{% endif %}

@@ -79,8 +79,7 @@
               onerror="this.onerror=null;this.src='/static/img/placeholder.svg';"
               style="width:44px;height:58px;object-fit:cover;border-radius:6px;">
             <div>
-              <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="fw-semibold text-decoration-none"
-                style="color:#0400ff">{{ game.title }}</a>
+              <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="game-title-link fw-semibold">{{ game.title }}</a>
               <div class="small text-muted">{{ game.developer }}</div>
             </div>
           </div>

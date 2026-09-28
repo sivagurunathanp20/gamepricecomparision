@@ -18,11 +18,13 @@
 
       {% if featured_deal %}
       <div class="glass p-3 d-inline-flex align-items-center gap-3 mb-4">
-        <img loading="lazy" src="{{ featured_deal.game.cover_image or '/static/img/placeholder.svg' }}" 
-             onerror="this.onerror=null;this.src='/static/img/placeholder.svg';"
-             style="width:56px;height:76px;object-fit:cover;border-radius:8px;">
+        <a href="{{ url_for('main.game_details', slug=featured_deal.game.slug) }}">
+          <img loading="lazy" src="{{ featured_deal.game.cover_image or '/static/img/placeholder.svg' }}" 
+               onerror="this.onerror=null;this.src='/static/img/placeholder.svg';"
+               style="width:56px;height:76px;object-fit:cover;border-radius:8px;">
+        </a>
         <div>
-          <div class="fw-semibold">{{ featured_deal.game.title }}</div>
+          <a href="{{ url_for('main.game_details', slug=featured_deal.game.slug) }}" class="game-title-link fw-semibold d-block">{{ featured_deal.game.title }}</a>
           <div class="hero-price-tag">
             <span class="old">{{ featured_deal.game.best_price.original_price|currency(featured_deal.game.best_price.price_currency) if featured_deal.game.best_price and featured_deal.game.best_price.original_price else '' }}</span>
             <span class="new">-{{ featured_deal.discount_percent }}%</span>
@@ -88,7 +90,7 @@
           <a href="{{ url_for('main.game_details', slug=game.slug) }}"><img loading="lazy" src="{{ game.display_image }}" alt="{{ game.title }}" onerror="if (this.src.indexOf('header.jpg') === -1 && '{{ game.steam_app_id or '' }}') { this.src='https://cdn.akamai.steamstatic.com/steam/apps/{{ game.steam_app_id }}/header.jpg'; } else { this.onerror=null; this.src='/static/img/placeholder.svg'; }"></a>
         </div>
         <div class="p-3">
-          <div class="fw-semibold text-truncate">{{ game.title }}</div>
+          <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="game-title-link fw-semibold text-truncate d-block" title="{{ game.title }}">{{ game.title }}</a>
           <div class="d-flex align-items-baseline gap-2 mt-1">
             <span class="text-muted text-decoration-line-through small">{{ listing.original_price|currency(listing.price_currency) }}</span>
             <span class="fw-bold" style="color:var(--neon-lime)">{{ listing.current_price|currency(listing.price_currency) }}</span>

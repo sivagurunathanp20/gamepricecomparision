@@ -25,7 +25,7 @@
     </a>
   </div>
   <div class="p-3">
-    <div class="fw-semibold text-truncate" title="{{ game.title }}">{{ game.title }}</div>
+    <a href="{{ url_for('main.game_details', slug=game.slug) }}" class="game-title-link d-block fw-semibold text-truncate" title="{{ game.title }}">{{ game.title }}</a>
     <div class="d-flex flex-wrap gap-1 mt-2">
       {% if game.category %}<span class="platform-chip">{{ game.category.name }}</span>{% endif %}
       {% if game.metacritic_score %}<span class="metacritic-chip metacritic-{{ 'high' if game.metacritic_score >= 75 else 'mid' if game.metacritic_score >= 50 else 'low' }}">{{ game.metacritic_score }}</span>{% endif %}
