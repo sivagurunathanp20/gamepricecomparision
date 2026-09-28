@@ -64,20 +64,96 @@ def _ensure_price_verification_columns():
 
 
 def _ensure_real_game_images():
-    """Update all seeded games in the DB to use real Steam CDN header images."""
+    """Update all seeded and stored games in the DB to use real Steam CDN or verified publisher cover art."""
     try:
         inspector = inspect(db.engine)
         if "games" not in inspector.get_table_names():
             return
+
+        # Direct cover URLs for console exclusives and non-Steam titles
+        direct_maps = {
+            "bloodborne": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rba.jpg",
+            "bayonetta-3": "https://images.igdb.com/igdb/image/upload/t_cover_big/co57dr.jpg",
+            "fire-emblem-three-houses": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1n00.jpg",
+            "xenoblade-chronicles-3": "https://images.igdb.com/igdb/image/upload/t_cover_big/co49wt.jpg",
+            "xenoblade-chronicles-de": "https://images.igdb.com/igdb/image/upload/t_cover_big/co22j1.jpg",
+            "gran-turismo-7": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2k0f.jpg",
+            "world-of-warcraft": "https://images.igdb.com/igdb/image/upload/t_cover_big/co201p.jpg",
+            "escape-from-tarkov": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1x77.jpg",
+            "blue-protocol": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2z0k.jpg",
+            "genshin-impact-pc": "https://images.igdb.com/igdb/image/upload/t_cover_big/co20au.jpg",
+            "genshin-impact": "https://images.igdb.com/igdb/image/upload/t_cover_big/co20au.jpg",
+            "fortnite": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2040.jpg",
+            "valorant": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2mvt.jpg",
+            "xdefiant": "https://images.igdb.com/igdb/image/upload/t_cover_big/co388o.jpg",
+            "rocket-league-sideswipe": "https://images.igdb.com/igdb/image/upload/t_cover_big/co37lq.jpg",
+            "castlevania-symphony-of-the-night": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1wzp.jpg",
+        }
+
+        # App IDs to correct in case of old seeds
+        fixed_appids = {
+            "ghostrunner-2": 2144740,
+            "like-a-dragon-ishin": 1805480,
+            "smite-2": 2437170,
+            "returnal": 1649240,
+            "street-fighter-6": 1364780,
+            "triangle-strategy": 1850510,
+            "sword-art-online-fb": 626690,
+            "eiyuden-chronicle-hundred-heroes": 1658280,
+            "manifold-garden": 1258830,
+            "bpm-bullets-per-minute": 1286350,
+            "my-time-at-sandrock": 1084600,
+            "tavern-master": 1525700,
+            "alchemy-garden": 935400,
+            "emily-is-away-too": 523780,
+            "red-dead-redemption-2-goty": 1174180,
+            "elden-ring-shadow-of-the-erdtree": 2778580,
+            "disco-elysium-fc-redux": 632470,
+            "record-of-lodoss-war-deedlit-in-wl": 1082900,
+            "castlevania-symphony-of-the-night": 1807650,
+            "rayman-legends-definitive-ed": 242550,
+            "rune-factory-5": 1702330,
+            "celestia-chain-of-fate": 2791850,
+            "warzone-20": 1938090,
+            "death-stranding-director": 1850570,
+            "minecraft": 1672970,
+            "wardogs": 1483870,
+            "f1-25": 2488620,
+            "resident-evil-requiem": 2050650,
+            "control-resonant": 870780,
+            "observer-system-redux": 1386900,
+            "endling-extinction-is-forever": 898890,
+            "somerville": 1671410,
+            "the-callisto-protocol": 1544020,
+            "hard-west-2": 1282410,
+            "galactic-civilizations-iv": 1357210,
+            "zenless-zone-zero": 4162040,
+        }
+
         with db.engine.begin() as conn:
+            # Fix any outdated or broken Steam App IDs
+            for slug, aid in fixed_appids.items():
+                conn.execute(
+                    text("UPDATE games SET steam_app_id = :aid WHERE slug = :slug"),
+                    {"aid": aid, "slug": slug}
+                )
+
+            # Update all Steam games to reliable Steam CDN header.jpg URLs
             conn.execute(text(
                 "UPDATE games SET cover_image = 'https://cdn.akamai.steamstatic.com/steam/apps/' || CAST(steam_app_id AS VARCHAR) || '/header.jpg' "
-                "WHERE steam_app_id IS NOT NULL AND (cover_image LIKE '%placeholder%' OR cover_image LIKE '%library_600x900%' OR cover_image IS NULL OR cover_image = '')"
+                "WHERE steam_app_id IS NOT NULL"
             ))
             conn.execute(text(
                 "UPDATE games SET banner_image = 'https://cdn.akamai.steamstatic.com/steam/apps/' || CAST(steam_app_id AS VARCHAR) || '/header.jpg' "
-                "WHERE steam_app_id IS NOT NULL AND (banner_image IS NULL OR banner_image = '')"
+                "WHERE steam_app_id IS NOT NULL"
             ))
+
+            # Update non-Steam games with direct high-res covers
+            for slug, url in direct_maps.items():
+                conn.execute(
+                    text("UPDATE games SET cover_image = :url, banner_image = :url WHERE slug = :slug"),
+                    {"url": url, "slug": slug}
+                )
     except Exception:
         pass
 

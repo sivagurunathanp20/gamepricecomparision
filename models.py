@@ -107,15 +107,49 @@ class Game(db.Model):
             return self.banner_image
 
         _EXCLUSIVE_COVERS = {
-            "gran-turismo-7": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-7-keyart-01-en-14sep21",
-            "castlevania-symphony-of-the-night": "https://cdn.akamai.steamstatic.com/steam/apps/1807650/header.jpg",
+            "bloodborne": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rba.jpg",
+            "bayonetta-3": "https://images.igdb.com/igdb/image/upload/t_cover_big/co57dr.jpg",
+            "fire-emblem-three-houses": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1n00.jpg",
+            "xenoblade-chronicles-3": "https://images.igdb.com/igdb/image/upload/t_cover_big/co49wt.jpg",
+            "xenoblade-chronicles-de": "https://images.igdb.com/igdb/image/upload/t_cover_big/co22j1.jpg",
+            "gran-turismo-7": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2k0f.jpg",
+            "world-of-warcraft": "https://images.igdb.com/igdb/image/upload/t_cover_big/co201p.jpg",
+            "escape-from-tarkov": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1x77.jpg",
+            "blue-protocol": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2z0k.jpg",
+            "genshin-impact-pc": "https://images.igdb.com/igdb/image/upload/t_cover_big/co20au.jpg",
+            "genshin-impact-(pc)": "https://images.igdb.com/igdb/image/upload/t_cover_big/co20au.jpg",
+            "genshin-impact": "https://images.igdb.com/igdb/image/upload/t_cover_big/co20au.jpg",
+            "fortnite": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2040.jpg",
+            "valorant": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2mvt.jpg",
+            "xdefiant": "https://images.igdb.com/igdb/image/upload/t_cover_big/co388o.jpg",
+            "rocket-league-sideswipe": "https://images.igdb.com/igdb/image/upload/t_cover_big/co37lq.jpg",
+            "castlevania-symphony-of-the-night": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1wzp.jpg",
             "rayman-legends-definitive-ed": "https://cdn.akamai.steamstatic.com/steam/apps/242550/header.jpg",
+            "rayman-legends-definitive-ed.": "https://cdn.akamai.steamstatic.com/steam/apps/242550/header.jpg",
             "rune-factory-5": "https://cdn.akamai.steamstatic.com/steam/apps/1702330/header.jpg",
-            "celestia-chain-of-fate": "https://cdn.akamai.steamstatic.com/steam/apps/2591600/header.jpg",
+            "celestia-chain-of-fate": "https://cdn.akamai.steamstatic.com/steam/apps/2791850/header.jpg",
             "record-of-lodoss-war-deedlit-in-wl": "https://cdn.akamai.steamstatic.com/steam/apps/1082900/header.jpg",
+            "red-dead-redemption-2-goty": "https://cdn.akamai.steamstatic.com/steam/apps/1174180/header.jpg",
+            "red-dead-redemption-2-(goty)": "https://cdn.akamai.steamstatic.com/steam/apps/1174180/header.jpg",
+            "elden-ring-shadow-of-the-erdtree": "https://cdn.akamai.steamstatic.com/steam/apps/2778580/header.jpg",
+            "disco-elysium-fc-redux": "https://cdn.akamai.steamstatic.com/steam/apps/632470/header.jpg",
+            "warzone-20": "https://cdn.akamai.steamstatic.com/steam/apps/1938090/header.jpg",
+            "warzone-2.0": "https://cdn.akamai.steamstatic.com/steam/apps/1938090/header.jpg",
+            "zenless-zone-zero": "https://cdn.akamai.steamstatic.com/steam/apps/4162040/header.jpg",
+            "minecraft": "https://cdn.akamai.steamstatic.com/steam/apps/1672970/header.jpg",
+            "observer-system-redux": "https://cdn.akamai.steamstatic.com/steam/apps/1386900/header.jpg",
+            "endling-extinction-is-forever": "https://cdn.akamai.steamstatic.com/steam/apps/898890/header.jpg",
+            "somerville": "https://cdn.akamai.steamstatic.com/steam/apps/1671410/header.jpg",
+            "the-callisto-protocol": "https://cdn.akamai.steamstatic.com/steam/apps/1544020/header.jpg",
+            "hard-west-2": "https://cdn.akamai.steamstatic.com/steam/apps/1282410/header.jpg",
+            "galactic-civilizations-iv": "https://cdn.akamai.steamstatic.com/steam/apps/1357210/header.jpg",
         }
-        if self.slug in _EXCLUSIVE_COVERS:
-            return _EXCLUSIVE_COVERS[self.slug]
+        slug_raw = (self.slug or "").lower().strip()
+        slug_clean = slug_raw.replace(":", "").replace("'", "").replace("(", "").replace(")", "").replace(".", "").strip()
+        if slug_raw in _EXCLUSIVE_COVERS:
+            return _EXCLUSIVE_COVERS[slug_raw]
+        if slug_clean in _EXCLUSIVE_COVERS:
+            return _EXCLUSIVE_COVERS[slug_clean]
 
         return "/static/img/placeholder.svg"
 

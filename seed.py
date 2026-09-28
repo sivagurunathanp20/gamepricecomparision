@@ -91,13 +91,13 @@ GAMES = [
     dict(title="Warhammer 40K: Space Marine 2",  category="Action",     dev="Saber Interactive",   pub="Focus Entertainment", rating=4.7, popularity=920, ftp=False, appid=2183900),
     dict(title="Stellar Blade",                  category="Action",     dev="Shift Up",            pub="Sony Interactive Entertainment", rating=4.6, popularity=870, ftp=False, appid=3489700),
     dict(title="Devil May Cry 5",                category="Action",     dev="Capcom",              pub="Capcom",             rating=4.8, popularity=840, ftp=False, appid=601150),
-    dict(title="Ghostrunner 2",                  category="Action",     dev="One More Level",      pub="505 Games",          rating=4.5, popularity=720, ftp=False, appid=1798650),
+    dict(title="Ghostrunner 2",                  category="Action",     dev="One More Level",      pub="505 Games",          rating=4.5, popularity=720, ftp=False, appid=2144740),
     dict(title="Sifu",                           category="Action",     dev="Sloclap",             pub="Sloclap",            rating=4.6, popularity=750, ftp=False, appid=2138710),
-    dict(title="WARDOGS",                        category="Shooter",    dev="Emberstrike",         pub="Emberstrike",        rating=4.5, popularity=910, ftp=False, appid=1867240),
+    dict(title="WARDOGS",                        category="Shooter",    dev="Emberstrike",         pub="Emberstrike",        rating=4.5, popularity=910, ftp=False, appid=1483870),
 
     # RPG
     dict(title="Final Fantasy XVI",              category="RPG",        dev="Square Enix",         pub="Square Enix",        rating=4.5, popularity=860, ftp=False, appid=2515020),
-    dict(title="Like a Dragon: Ishin!",          category="RPG",        dev="Ryu Ga Gotoku Studio", pub="SEGA",              rating=4.6, popularity=790, ftp=False, appid=1843600),
+    dict(title="Like a Dragon: Ishin!",          category="RPG",        dev="Ryu Ga Gotoku Studio", pub="SEGA",              rating=4.6, popularity=790, ftp=False, appid=1805480),
     dict(title="Persona 5 Royal",                category="RPG",        dev="Atlus",               pub="Atlus",              rating=4.9, popularity=910, ftp=False, appid=1687950),
     dict(title="Dragon's Dogma 2",               category="RPG",        dev="Capcom",              pub="Capcom",             rating=4.4, popularity=860, ftp=False, appid=2054970),
     dict(title="Metaphor: ReFantazio",           category="RPG",        dev="Atlus",               pub="Atlus",              rating=4.9, popularity=930, ftp=False, appid=2679460),
@@ -113,10 +113,10 @@ GAMES = [
     dict(title="Indiana Jones and the Great Circle", category="Adventure", dev="MachineGames",     pub="Bethesda Softworks", rating=4.7, popularity=870, ftp=False, appid=2677660),
     dict(title="A Plague Tale: Requiem",         category="Adventure",  dev="Asobo Studio",        pub="Focus Entertainment", rating=4.7, popularity=820, ftp=False, appid=1881700),
     dict(title="Ori and the Will of the Wisps",  category="Adventure",  dev="Moon Studios",        pub="Xbox Game Studios",  rating=4.9, popularity=800, ftp=False, appid=1057090),
-    dict(title="Death Stranding: Director's Cut", category="Adventure", dev="Kojima Productions",  pub="505 Games",          rating=4.5, popularity=810, ftp=False, appid=1738090),
+    dict(title="Death Stranding: Director's Cut", category="Adventure", dev="Kojima Productions",  pub="505 Games",          rating=4.5, popularity=810, ftp=False, appid=1850570),
     dict(title="Split Fiction",                  category="Adventure",  dev="Hazelight Studios",   pub="Electronic Arts",    rating=4.9, popularity=965, ftp=False, appid=2001120),
-    dict(title="Control Resonant",               category="Adventure",  dev="Remedy Entertainment", pub="505 Games",         rating=4.6, popularity=840, ftp=False, appid=3669870),
-    dict(title="Resident Evil Requiem",          category="Adventure",  dev="Capcom",              pub="Capcom",             rating=4.7, popularity=920, ftp=False, appid=3764200),
+    dict(title="Control Resonant",               category="Adventure",  dev="Remedy Entertainment", pub="505 Games",         rating=4.6, popularity=840, ftp=False, appid=None),
+    dict(title="Resident Evil Requiem",          category="Adventure",  dev="Capcom",              pub="Capcom",             rating=4.7, popularity=920, ftp=False, appid=None),
 
     # Strategy
     dict(title="Against the Storm",              category="Strategy",   dev="Eremite Games",       pub="Hooded Horse",       rating=4.9, popularity=780, ftp=False, appid=1336490),
@@ -125,7 +125,7 @@ GAMES = [
     dict(title="Slay the Spire 2",               category="Strategy",   dev="Mega Crit",           pub="Mega Crit",          rating=4.8, popularity=880, ftp=False, appid=2868840),
 
     # Simulation
-    dict(title="Minecraft",                      category="Simulation", dev="Mojang Studios",      pub="Microsoft",          rating=4.9, popularity=999, ftp=False, appid=None),
+    dict(title="Minecraft",                      category="Simulation", dev="Mojang Studios",      pub="Microsoft",          rating=4.9, popularity=999, ftp=False, appid=1672970),
     dict(title="Planet Coaster 2",               category="Simulation", dev="Frontier Developments", pub="Frontier Developments", rating=4.4, popularity=720, ftp=False, appid=2688950),
     dict(title="Schedule I",                     category="Simulation", dev="TVGS",                pub="TVGS",               rating=4.8, popularity=890, ftp=False, appid=3164500),
     dict(title="Subnautica 2",                   category="Simulation", dev="Unknown Worlds Entertainment", pub="Unknown Worlds Entertainment", rating=4.7, popularity=880, ftp=False, appid=1962700),
@@ -133,7 +133,7 @@ GAMES = [
     # Racing
     dict(title="EA Sports WRC",                  category="Racing",     dev="Codemasters",         pub="Electronic Arts",    rating=4.4, popularity=680, ftp=False, appid=1080600),
     dict(title="Assetto Corsa Competizione",     category="Racing",     dev="Kunos Simulazioni",   pub="505 Games",          rating=4.6, popularity=710, ftp=False, appid=805550),
-    dict(title="F1 25",                          category="Racing",     dev="Codemasters",         pub="Electronic Arts",    rating=4.4, popularity=700, ftp=False, appid=3059520),
+    dict(title="F1 25",                          category="Racing",     dev="Codemasters",         pub="Electronic Arts",    rating=4.4, popularity=700, ftp=False, appid=2488620),
 
     # --- Extended Catalog ---
     # Action / Souls-likes
@@ -214,7 +214,7 @@ GAMES = [
     dict(title="Genshin Impact",                 category="RPG",        dev="HoYoverse",            pub="HoYoverse",          rating=4.4, popularity=970, ftp=True,  appid=1888160),
     dict(title="Honkai: Star Rail",              category="RPG",        dev="HoYoverse",            pub="HoYoverse",          rating=4.6, popularity=960, ftp=True,  appid=1546560),
     dict(title="Wuthering Waves",                category="Action",     dev="Kuro Games",           pub="Kuro Games",         rating=4.3, popularity=880, ftp=True,  appid=2479070),
-    dict(title="Smite 2",                        category="Strategy",   dev="Titan Forge Games",    pub="Hi-Rez Studios",     rating=4.0, popularity=700, ftp=True,  appid=1658780),
+    dict(title="Smite 2",                        category="Strategy",   dev="Titan Forge Games",    pub="Hi-Rez Studios",     rating=4.0, popularity=700, ftp=True,  appid=2437170),
     dict(title="Fall Guys",                      category="Action",     dev="Mediatonic",           pub="Epic Games",         rating=4.2, popularity=820, ftp=True,  appid=1097150),
     dict(title="Splitgate: Arena Reloaded",      category="Shooter",    dev="1047 Games",           pub="1047 Games",         rating=4.1, popularity=720, ftp=True,  appid=2918300),
     dict(title="Brawlhalla",                     category="Action",     dev="Blue Mammoth Games",   pub="Ubisoft",            rating=4.3, popularity=750, ftp=True,  appid=291550),
@@ -242,14 +242,14 @@ GAMES = [
     dict(title="The Witcher 2",                  category="RPG",        dev="CD Projekt Red",        pub="CD Projekt",         rating=4.7, popularity=840, ftp=False, appid=20920),
     dict(title="Watch Dogs: Legion",             category="Action",     dev="Ubisoft Toronto",       pub="Ubisoft",            rating=4.1, popularity=720, ftp=False, appid=2291680),
     dict(title="Ghost of Tsushima",              category="Action",     dev="Sucker Punch Productions", pub="PlayStation Publishing LLC", rating=4.9, popularity=960, ftp=False, appid=2215430),
-    dict(title="Returnal",                       category="Action",     dev="Housemarque",           pub="PlayStation Publishing LLC", rating=4.7, popularity=820, ftp=False, appid=1649250),
+    dict(title="Returnal",                       category="Action",     dev="Housemarque",           pub="PlayStation Publishing LLC", rating=4.7, popularity=820, ftp=False, appid=1649240),
     dict(title="The Last of Us Part I",          category="Action",     dev="Naughty Dog",           pub="PlayStation Publishing LLC", rating=4.8, popularity=940, ftp=False, appid=1888930),
     dict(title="Horizon Zero Dawn",              category="Action",     dev="Guerrilla Games",       pub="PlayStation Publishing LLC", rating=4.7, popularity=900, ftp=False, appid=1151640),
     dict(title="Horizon Forbidden West",         category="Action",     dev="Guerrilla Games",       pub="PlayStation Publishing LLC", rating=4.7, popularity=890, ftp=False, appid=2420110),
     dict(title="Uncharted: Legacy of Thieves",   category="Adventure",  dev="Naughty Dog",           pub="PlayStation Publishing LLC", rating=4.7, popularity=860, ftp=False, appid=1659420),
     dict(title="Mortal Kombat 1",                category="Action",     dev="NetherRealm Studios",   pub="Warner Bros. Games", rating=4.4, popularity=830, ftp=False, appid=1971870),
     dict(title="Tekken 8",                       category="Action",     dev="Bandai Namco Studios",  pub="Bandai Namco",       rating=4.6, popularity=840, ftp=False, appid=1778820),
-    dict(title="Street Fighter 6",               category="Action",     dev="Capcom",                pub="Capcom",             rating=4.7, popularity=850, ftp=False, appid=1966403),
+    dict(title="Street Fighter 6",               category="Action",     dev="Capcom",                pub="Capcom",             rating=4.7, popularity=850, ftp=False, appid=1364780),
     dict(title="Dragon Ball FighterZ",           category="Action",     dev="Arc System Works",      pub="Bandai Namco",       rating=4.6, popularity=800, ftp=False, appid=678950),
     dict(title="Guilty Gear: Strive",            category="Action",     dev="Arc System Works",      pub="Arc System Works",   rating=4.7, popularity=790, ftp=False, appid=1384160),
     dict(title="Nickelodeon All-Star Brawl 2",   category="Action",     dev="Fair Play Labs",         pub="GameMill Entertainment", rating=3.9, popularity=600, ftp=False, appid=2313910),
@@ -260,7 +260,7 @@ GAMES = [
     dict(title="Persona 3 Reload",              category="RPG",        dev="Atlus",                 pub="Sega",               rating=4.8, popularity=880, ftp=False, appid=2161700),
     dict(title="Tales of Arise",                category="RPG",        dev="Bandai Namco Studios",  pub="Bandai Namco",       rating=4.6, popularity=790, ftp=False, appid=1277400),
     dict(title="Dragon Quest XI S",             category="RPG",        dev="Square Enix",           pub="Square Enix",        rating=4.8, popularity=800, ftp=False, appid=742120),
-    dict(title="Triangle Strategy",             category="RPG",        dev="Square Enix",           pub="Square Enix",        rating=4.6, popularity=710, ftp=False, appid=1546580),
+    dict(title="Triangle Strategy",             category="RPG",        dev="Square Enix",           pub="Square Enix",        rating=4.6, popularity=710, ftp=False, appid=1850510),
     dict(title="Tactics Ogre: Reborn",          category="Strategy",   dev="Square Enix",           pub="Square Enix",        rating=4.6, popularity=700, ftp=False, appid=1973530),
     dict(title="Xenoblade Chronicles: DE",      category="RPG",        dev="Monolith Soft",         pub="Nintendo",           rating=4.8, popularity=790, ftp=False, appid=None),
     dict(title="Final Fantasy VII Rebirth",     category="RPG",        dev="Square Enix",           pub="Square Enix",        rating=4.9, popularity=950, ftp=False, appid=2909400),
@@ -271,8 +271,8 @@ GAMES = [
     dict(title="Blue Protocol",                 category="RPG",        dev="Bandai Namco Online",   pub="Bandai Namco",       rating=3.9, popularity=690, ftp=True,  appid=None),
     dict(title="Genshin Impact (PC)",            category="RPG",        dev="HoYoverse",             pub="HoYoverse",          rating=4.4, popularity=971, ftp=True,  appid=None),
     dict(title="Zenless Zone Zero",             category="RPG",        dev="HoYoverse",             pub="HoYoverse",          rating=4.3, popularity=900, ftp=True,  appid=2406523),
-    dict(title="Sword Art Online: FB",          category="RPG",        dev="Bandai Namco Studios",  pub="Bandai Namco",       rating=4.2, popularity=680, ftp=False, appid=1329860),
-    dict(title="Eiyuden Chronicle: Hundred Heroes", category="RPG",   dev="Rabbit & Bear Studios", pub="505 Games",          rating=4.5, popularity=750, ftp=False, appid=1658260),
+    dict(title="Sword Art Online: FB",          category="RPG",        dev="Bandai Namco Studios",  pub="Bandai Namco",       rating=4.2, popularity=680, ftp=False, appid=626690),
+    dict(title="Eiyuden Chronicle: Hundred Heroes", category="RPG",   dev="Rabbit & Bear Studios", pub="505 Games",          rating=4.5, popularity=750, ftp=False, appid=1658280),
     dict(title="Granblue Fantasy: Relink",      category="RPG",        dev="Cygames",               pub="Cygames",            rating=4.7, popularity=820, ftp=False, appid=881020),
     dict(title="Asterigos: Curse of the Stars", category="RPG",        dev="Acme Gamestudio",       pub="tinyBuild",          rating=4.3, popularity=650, ftp=False, appid=1819820),
     dict(title="Outward: Definitive Edition",   category="RPG",        dev="Nine Dots Studio",      pub="Deep Silver",        rating=4.2, popularity=640, ftp=False, appid=1743750),
@@ -294,7 +294,7 @@ GAMES = [
     dict(title="Halo Infinite",                 category="Shooter",    dev="343 Industries",        pub="Xbox Game Studios",  rating=4.2, popularity=800, ftp=False, appid=1240440),
     dict(title="PUBG: Battlegrounds",           category="Shooter",    dev="Krafton",               pub="Krafton",            rating=4.0, popularity=880, ftp=True,  appid=578080),
     dict(title="Fortnite",                      category="Shooter",    dev="Epic Games",            pub="Epic Games",         rating=4.0, popularity=990, ftp=True,  appid=None),
-    dict(title="Warzone 2.0",                   category="Shooter",    dev="Raven Software",        pub="Activision",         rating=3.9, popularity=900, ftp=True,  appid=None),
+    dict(title="Warzone 2.0",                   category="Shooter",    dev="Raven Software",        pub="Activision",         rating=3.9, popularity=900, ftp=True,  appid=1938090),
     dict(title="XDefiant",                      category="Shooter",    dev="Ubisoft San Francisco", pub="Ubisoft",            rating=3.8, popularity=700, ftp=True,  appid=1483950),
     dict(title="Valorant",                      category="Shooter",    dev="Riot Games",            pub="Riot Games",         rating=4.3, popularity=980, ftp=True,  appid=None),
     dict(title="Overwatch 2",                   category="Shooter",    dev="Blizzard Entertainment", pub="Blizzard Entertainment", rating=3.9, popularity=900, ftp=True, appid=2357570),
@@ -303,8 +303,8 @@ GAMES = [
     dict(title="Planetside 2",                  category="Shooter",    dev="Rogue Planet Games",    pub="Daybreak Game Company", rating=4.1, popularity=650, ftp=True, appid=218230),
 
     # Adventure / Exploration
-    dict(title="Red Dead Redemption 2 (GOTY)",   category="Adventure",  dev="Rockstar Games",        pub="Rockstar Games",     rating=4.9, popularity=994, ftp=False, appid=None),
-    dict(title="Elden Ring: Shadow of the Erdtree", category="Action", dev="FromSoftware",          pub="Bandai Namco",       rating=4.8, popularity=960, ftp=False, appid=None),
+    dict(title="Red Dead Redemption 2 (GOTY)",   category="Adventure",  dev="Rockstar Games",        pub="Rockstar Games",     rating=4.9, popularity=994, ftp=False, appid=1174180),
+    dict(title="Elden Ring: Shadow of the Erdtree", category="Action", dev="FromSoftware",          pub="Bandai Namco",       rating=4.8, popularity=960, ftp=False, appid=2778580),
     dict(title="Firewatch",                     category="Adventure",  dev="Campo Santo",           pub="Campo Santo",        rating=4.7, popularity=770, ftp=False, appid=383870),
     dict(title="Oxenfree II",                   category="Adventure",  dev="Night School Studio",   pub="Netflix Games",      rating=4.5, popularity=680, ftp=False, appid=1795400),
     dict(title="Oxenfree",                      category="Adventure",  dev="Night School Studio",   pub="Night School Studio", rating=4.6, popularity=700, ftp=False, appid=388880),
@@ -317,12 +317,12 @@ GAMES = [
     dict(title="The Forgotten City",            category="Adventure",  dev="Modern Storyteller",    pub="Dear Villagers",     rating=4.8, popularity=720, ftp=False, appid=874260),
     dict(title="Control",                       category="Adventure",  dev="Remedy Entertainment",  pub="505 Games",          rating=4.6, popularity=820, ftp=False, appid=870780),
     dict(title="The Medium",                    category="Adventure",  dev="Bloober Team",          pub="Bloober Team",       rating=4.3, popularity=680, ftp=False, appid=1293160),
-    dict(title="Observer: System Redux",        category="Adventure",  dev="Bloober Team",          pub="Bloober Team",       rating=4.4, popularity=650, ftp=False, appid=1386860),
+    dict(title="Observer: System Redux",        category="Adventure",  dev="Bloober Team",          pub="Bloober Team",       rating=4.4, popularity=650, ftp=False, appid=1386900),
     dict(title="Layers of Fear",                category="Adventure",  dev="Bloober Team",          pub="Bloober Team",       rating=4.2, popularity=650, ftp=False, appid=391720),
     dict(title="Layers of Fear 2",              category="Adventure",  dev="Bloober Team",          pub="Bloober Team",       rating=4.1, popularity=620, ftp=False, appid=947270),
-    dict(title="Endling: Extinction is Forever", category="Adventure", dev="HeroBeard",             pub="HandyGames",         rating=4.5, popularity=660, ftp=False, appid=1584550),
+    dict(title="Endling: Extinction is Forever", category="Adventure", dev="HeroBeard",             pub="HandyGames",         rating=4.5, popularity=660, ftp=False, appid=898890),
     dict(title="As Dusk Falls",                 category="Adventure",  dev="Interior/Night",        pub="Xbox Game Studios",  rating=4.5, popularity=660, ftp=False, appid=1580140),
-    dict(title="Somerville",                    category="Adventure",  dev="Jumpship",              pub="Jumpship",           rating=4.2, popularity=620, ftp=False, appid=1581530),
+    dict(title="Somerville",                    category="Adventure",  dev="Jumpship",              pub="Jumpship",           rating=4.2, popularity=620, ftp=False, appid=1671410),
     dict(title="Immortality",                   category="Adventure",  dev="Sam Barlow",            pub="Half Mermaid",       rating=4.7, popularity=680, ftp=False, appid=1929580),
 
     # Horror
@@ -331,7 +331,7 @@ GAMES = [
     dict(title="Resident Evil 3 Remake",        category="Action",     dev="Capcom",                pub="Capcom",             rating=4.4, popularity=820, ftp=False, appid=952060),
     dict(title="Resident Evil 2 Remake",        category="Action",     dev="Capcom",                pub="Capcom",             rating=4.8, popularity=890, ftp=False, appid=883710),
     dict(title="Dead Space Remake",             category="Action",     dev="Motive Studio",         pub="Electronic Arts",    rating=4.8, popularity=850, ftp=False, appid=1693980),
-    dict(title="The Callisto Protocol",         category="Action",     dev="Striking Distance Studios", pub="Krafton",        rating=4.1, popularity=700, ftp=False, appid=1272260),
+    dict(title="The Callisto Protocol",         category="Action",     dev="Striking Distance Studios", pub="Krafton",        rating=4.1, popularity=700, ftp=False, appid=1544020),
     dict(title="Alien: Isolation",              category="Adventure",  dev="Creative Assembly",     pub="SEGA",               rating=4.8, popularity=800, ftp=False, appid=214490),
     dict(title="Amnesia: The Bunker",           category="Adventure",  dev="Frictional Games",      pub="Frictional Games",   rating=4.6, popularity=720, ftp=False, appid=1944430),
     dict(title="Phasmophobia",                  category="Adventure",  dev="Kinetic Games",         pub="Kinetic Games",      rating=4.7, popularity=800, ftp=False, appid=739630),
@@ -360,11 +360,11 @@ GAMES = [
     dict(title="Shadow Tactics: Blades of the Shogun", category="Strategy", dev="Mimimi Games",    pub="Daedalic Entertainment", rating=4.8, popularity=740, ftp=False, appid=418240),
     dict(title="Wartales",                      category="Strategy",   dev="Shiro Games",           pub="Shiro Games",        rating=4.6, popularity=720, ftp=False, appid=1527950),
     dict(title="Battle Brothers",               category="Strategy",   dev="Overhype Studios",      pub="Overhype Studios",   rating=4.7, popularity=700, ftp=False, appid=365360),
-    dict(title="Hard West 2",                   category="Strategy",   dev="Ice Code Games",        pub="Good Shepherd Entertainment", rating=4.4, popularity=650, ftp=False, appid=1865760),
+    dict(title="Hard West 2",                   category="Strategy",   dev="Ice Code Games",        pub="Good Shepherd Entertainment", rating=4.4, popularity=650, ftp=False, appid=1282410),
     dict(title="Dune: Spice Wars",              category="Strategy",   dev="Shiro Games",           pub="Funcom",             rating=4.3, popularity=700, ftp=False, appid=1605220),
     dict(title="Homeworld Remastered",          category="Strategy",   dev="Gearbox Software",      pub="Gearbox Publishing", rating=4.6, popularity=680, ftp=False, appid=244160),
     dict(title="Endless Space 2",               category="Strategy",   dev="Amplitude Studios",     pub="SEGA",               rating=4.5, popularity=660, ftp=False, appid=392110),
-    dict(title="Galactic Civilizations IV",     category="Strategy",   dev="Stardock Entertainment", pub="Stardock Entertainment", rating=4.2, popularity=620, ftp=False, appid=1846600),
+    dict(title="Galactic Civilizations IV",     category="Strategy",   dev="Stardock Entertainment", pub="Stardock Entertainment", rating=4.2, popularity=620, ftp=False, appid=1357210),
     dict(title="Master of Orion",               category="Strategy",   dev="NGD Studios",           pub="Wargaming",          rating=4.1, popularity=580, ftp=False, appid=410950),
 
     # Simulation / Sandbox
@@ -408,13 +408,13 @@ GAMES = [
     dict(title="Islets",                        category="Action",     dev="Kyle Thompson",         pub="Armor Games Studios", rating=4.6, popularity=630, ftp=False, appid=1728870),
     dict(title="Deedlit in Wonder Labyrinth",   category="Action",     dev="TEAM LADYBUG",          pub="TEAM LADYBUG",       rating=4.7, popularity=650, ftp=False, appid=1082900),
     dict(title="Record of Lodoss War: Deedlit in WL", category="Action", dev="TEAM LADYBUG",         pub="TEAM LADYBUG",       rating=4.7, popularity=640, ftp=False, appid=None),
-    dict(title="Castlevania: Symphony of the Night", category="Action", dev="Konami",              pub="Konami",             rating=4.9, popularity=800, ftp=False, appid=None),
+    dict(title="Castlevania: Symphony of the Night", category="Action", dev="Konami",              pub="Konami",             rating=4.9, popularity=800, ftp=False, appid=1807650),
     dict(title="Yooka-Laylee and the Impossible Lair", category="Action", dev="Playtonic Games",   pub="Team17",             rating=4.5, popularity=640, ftp=False, appid=1044020),
     dict(title="A Hat in Time",                 category="Action",     dev="Gears for Breakfast",   pub="Humble Bundle",      rating=4.9, popularity=830, ftp=False, appid=253230),
     dict(title="Super Lucky's Tale",            category="Action",     dev="Playful Studios",       pub="Xbox Game Studios",  rating=4.6, popularity=680, ftp=False, appid=967050),
     dict(title="Spyro Reignited Trilogy",       category="Action",     dev="Toys for Bob",          pub="Activision",         rating=4.8, popularity=790, ftp=False, appid=996580),
     dict(title="Crash Bandicoot N. Sane Trilogy", category="Action",   dev="Vicarious Visions",     pub="Activision",         rating=4.7, popularity=790, ftp=False, appid=731490),
-    dict(title="Rayman Legends Definitive Ed.", category="Action",     dev="Ubisoft Montpellier",   pub="Ubisoft",            rating=4.8, popularity=760, ftp=False, appid=None),
+    dict(title="Rayman Legends Definitive Ed.", category="Action",     dev="Ubisoft Montpellier",   pub="Ubisoft",            rating=4.8, popularity=760, ftp=False, appid=242550),
 
     # Puzzle
     dict(title="The Witness",                   category="Adventure",  dev="Jonathan Blow",         pub="Jonathan Blow",      rating=4.6, popularity=720, ftp=False, appid=210970),
@@ -426,7 +426,7 @@ GAMES = [
     dict(title="Cocoon",                        category="Adventure",  dev="Geometric Interactive", pub="Annapurna Interactive", rating=4.8, popularity=740, ftp=False, appid=1497440),
     dict(title="Viewfinder",                    category="Adventure",  dev="Sad Owl Studios",       pub="Thunderful Publishing", rating=4.6, popularity=680, ftp=False, appid=1382070),
     dict(title="Superliminal",                  category="Adventure",  dev="Pillow Castle Games",   pub="Pillow Castle Games", rating=4.7, popularity=720, ftp=False, appid=1049410),
-    dict(title="Manifold Garden",               category="Adventure",  dev="William Chyr Studio",   pub="William Chyr Studio", rating=4.7, popularity=670, ftp=False, appid=1162970),
+    dict(title="Manifold Garden",               category="Adventure",  dev="William Chyr Studio",   pub="William Chyr Studio", rating=4.7, popularity=670, ftp=False, appid=1258830),
     dict(title="Moncage",                       category="Adventure",  dev="Optillusion",           pub="Optillusion",        rating=4.6, popularity=620, ftp=False, appid=1195290),
     dict(title="Chants of Sennaar",             category="Adventure",  dev="Rundisc",               pub="Focus Entertainment", rating=4.8, popularity=700, ftp=False, appid=1931280),
     dict(title="Lorelei and the Laser Eyes",    category="Adventure",  dev="Simogo",                pub="Annapurna Interactive", rating=4.7, popularity=710, ftp=False, appid=1922340),
@@ -466,21 +466,21 @@ GAMES = [
     # Music / Rhythm
     dict(title="Crypt of the NecroDancer",      category="Action",     dev="Brace Yourself Games",  pub="Brace Yourself Games", rating=4.7, popularity=720, ftp=False, appid=247080),
     dict(title="Thumper",                       category="Action",     dev="Drool",                 pub="Drool",              rating=4.7, popularity=680, ftp=False, appid=356400),
-    dict(title="BPM: Bullets Per Minute",       category="Shooter",    dev="Awe Interactive",       pub="Awe Interactive",    rating=4.5, popularity=650, ftp=False, appid=1100690),
+    dict(title="BPM: Bullets Per Minute",       category="Shooter",    dev="Awe Interactive",       pub="Awe Interactive",    rating=4.5, popularity=650, ftp=False, appid=1286350),
     dict(title="Everhood",                      category="RPG",        dev="Foreign Gnomes",        pub="Foreign Gnomes",     rating=4.6, popularity=640, ftp=False, appid=1229380),
     dict(title="Muse Dash",                     category="Action",     dev="PeroPeroGames",         pub="X.D. Network",       rating=4.7, popularity=720, ftp=False, appid=774171),
 
     # Misc / Casual
     dict(title="Stardew Valley",                category="Simulation", dev="ConcernedApe",          pub="ConcernedApe",       rating=4.9, popularity=990, ftp=False, appid=413150),
     dict(title="Story of Seasons: A WL",        category="Simulation", dev="Marvelous",             pub="XSEED Games",        rating=4.5, popularity=680, ftp=False, appid=1575000),
-    dict(title="Rune Factory 5",                category="RPG",        dev="Marvelous",             pub="XSEED Games",        rating=4.4, popularity=680, ftp=False, appid=None),
+    dict(title="Rune Factory 5",                category="RPG",        dev="Marvelous",             pub="XSEED Games",        rating=4.4, popularity=680, ftp=False, appid=1702330),
     dict(title="My Time at Portia",             category="Simulation", dev="Pathea Games",          pub="Team17",             rating=4.5, popularity=700, ftp=False, appid=666140),
-    dict(title="My Time at Sandrock",           category="Simulation", dev="Pathea Games",          pub="Team17",             rating=4.6, popularity=720, ftp=False, appid=1084590),
+    dict(title="My Time at Sandrock",           category="Simulation", dev="Pathea Games",          pub="Team17",             rating=4.6, popularity=720, ftp=False, appid=1084600),
     dict(title="Palia",                         category="Simulation", dev="Singularity 6",         pub="Singularity 6",      rating=4.1, popularity=680, ftp=True,  appid=2707930),
     dict(title="Garden Story",                  category="RPG",        dev="Picogram",              pub="Rose City Games",    rating=4.5, popularity=630, ftp=False, appid=1062140),
     dict(title="Potion Craft: Alchemist Sim",   category="Simulation", dev="niceplay games",        pub="tinyBuild",          rating=4.7, popularity=690, ftp=False, appid=1210320),
-    dict(title="Tavern Master",                 category="Simulation", dev="MHGames",               pub="MHGames",            rating=4.4, popularity=620, ftp=False, appid=1600990),
-    dict(title="Alchemy Garden",                category="Simulation", dev="Alchemy Garden Studio", pub="Alchemy Garden Studio", rating=4.2, popularity=590, ftp=False, appid=2015090),
+    dict(title="Tavern Master",                 category="Simulation", dev="MHGames",               pub="MHGames",            rating=4.4, popularity=620, ftp=False, appid=1525700),
+    dict(title="Alchemy Garden",                category="Simulation", dev="Alchemy Garden Studio", pub="Alchemy Garden Studio", rating=4.2, popularity=590, ftp=False, appid=935400),
     dict(title="Dinkum",                        category="Simulation", dev="James Bendon",          pub="James Bendon",       rating=4.7, popularity=700, ftp=False, appid=1745680),
     dict(title="Slime Rancher 2",               category="Simulation", dev="Monomi Park",           pub="Monomi Park",        rating=4.7, popularity=740, ftp=False, appid=1657630),
     dict(title="Bugsnax",                       category="Adventure",  dev="Young Horses",          pub="Young Horses",       rating=4.5, popularity=700, ftp=False, appid=1287830),
@@ -489,19 +489,40 @@ GAMES = [
     dict(title="Coffee Talk",                   category="Adventure",  dev="Toge Productions",      pub="Toge Productions",   rating=4.7, popularity=680, ftp=False, appid=1090190),
     dict(title="Coffee Talk Episode 2",         category="Adventure",  dev="Toge Productions",      pub="Toge Productions",   rating=4.6, popularity=660, ftp=False, appid=1904800),
     dict(title="VA-11 Hall-A",                  category="Adventure",  dev="Sukeban Games",         pub="Ysbryd Games",       rating=4.8, popularity=700, ftp=False, appid=574420),
-    dict(title="Emily is Away Too",             category="Adventure",  dev="Kyle Seeley",           pub="Kyle Seeley",        rating=4.5, popularity=620, ftp=False, appid=641760),
-    dict(title="Celestia: Chain of Fate",       category="Adventure",  dev="Starfall Studio",       pub="Starfall Studio",    rating=4.3, popularity=600, ftp=False, appid=None),
+    dict(title="Emily is Away Too",             category="Adventure",  dev="Kyle Seeley",           pub="Kyle Seeley",        rating=4.5, popularity=620, ftp=False, appid=523780),
+    dict(title="Celestia: Chain of Fate",       category="Adventure",  dev="Starfall Studio",       pub="Starfall Studio",    rating=4.3, popularity=600, ftp=False, appid=2791850),
 ]
 
 COVER_COLORS = ["1a1a2e", "16213e", "0f3460", "533483", "e94560", "2b2d42", "222831", "393e46"]
 
 
+DIRECT_COVERS = {
+    "bloodborne": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rba.jpg",
+    "bayonetta-3": "https://images.igdb.com/igdb/image/upload/t_cover_big/co57dr.jpg",
+    "fire-emblem-three-houses": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1n00.jpg",
+    "xenoblade-chronicles-3": "https://images.igdb.com/igdb/image/upload/t_cover_big/co49wt.jpg",
+    "xenoblade-chronicles-de": "https://images.igdb.com/igdb/image/upload/t_cover_big/co22j1.jpg",
+    "gran-turismo-7": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2k0f.jpg",
+    "world-of-warcraft": "https://images.igdb.com/igdb/image/upload/t_cover_big/co201p.jpg",
+    "escape-from-tarkov": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1x77.jpg",
+    "blue-protocol": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2z0k.jpg",
+    "genshin-impact-pc": "https://images.igdb.com/igdb/image/upload/t_cover_big/co20au.jpg",
+    "genshin-impact": "https://images.igdb.com/igdb/image/upload/t_cover_big/co20au.jpg",
+    "fortnite": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2040.jpg",
+    "valorant": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2mvt.jpg",
+    "xdefiant": "https://images.igdb.com/igdb/image/upload/t_cover_big/co388o.jpg",
+    "rocket-league-sideswipe": "https://images.igdb.com/igdb/image/upload/t_cover_big/co37lq.jpg",
+    "castlevania-symphony-of-the-night": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1wzp.jpg",
+}
+
+
 def _game_cover(title, appid=None):
-    """Returns the best available cover image for a game.
-    Games with a Steam App ID get a real cover image from Steam CDN.
-    Games without a Steam App ID fall back to the sleek local SVG placeholder."""
+    """Returns the authentic cover image for a game."""
     if appid:
         return f"https://cdn.akamai.steamstatic.com/steam/apps/{appid}/header.jpg"
+    slug = title.lower().replace(" ", "-").replace(":", "").replace("'", "").replace("!", "")
+    if slug in DIRECT_COVERS:
+        return DIRECT_COVERS[slug]
     return "/static/img/placeholder.svg"
 
 
@@ -558,10 +579,11 @@ def populate_seed_data(drop=False):
             slug = g["title"].lower().replace(" ", "-").replace(":", "").replace("'", "").replace("!", "")
             existing = Game.query.filter_by(slug=slug).first() or Game.query.filter_by(title=g["title"]).first()
             if existing:
+                cover = _game_cover(g["title"], g.get("appid"))
+                existing.cover_image = cover
+                existing.banner_image = _game_banner(g.get("appid")) or cover
                 if g.get("appid"):
                     existing.steam_app_id = g["appid"]
-                    existing.cover_image = f"https://cdn.akamai.steamstatic.com/steam/apps/{g['appid']}/header.jpg"
-                    existing.banner_image = f"https://cdn.akamai.steamstatic.com/steam/apps/{g['appid']}/header.jpg"
         db.session.commit()
         print("Updated all existing games with official Steam artwork.")
         return
