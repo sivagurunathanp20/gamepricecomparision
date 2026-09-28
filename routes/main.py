@@ -10,27 +10,6 @@ from models import Game, GamePlatform, Platform, Deal, Category, Review, Feedbac
 main_bp = Blueprint("main", __name__)
 
 
-@main_bp.route("/debug-env")
-def debug_env():
-    import os
-    from models import Game
-    game_count = Game.query.count()
-    first_game = Game.query.first()
-    return jsonify({
-        "path_info": request.environ.get("PATH_INFO"),
-        "x_matched_path": request.environ.get("HTTP_X_MATCHED_PATH"),
-        "x_forwarded_uri": request.environ.get("HTTP_X_FORWARDED_URI"),
-        "request_uri": request.environ.get("REQUEST_URI"),
-        "raw_uri": request.environ.get("RAW_URI"),
-        "url": request.url,
-        "path": request.path,
-        "db_url": current_app.config.get("SQLALCHEMY_DATABASE_URI"),
-        "game_count": game_count,
-        "first_game": first_game.title if first_game else None,
-        "first_slug": first_game.slug if first_game else None,
-    })
-
-
 @main_bp.route("/")
 def home():
     now = datetime.utcnow()
