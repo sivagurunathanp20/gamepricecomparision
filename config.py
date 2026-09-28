@@ -32,12 +32,19 @@ class Config:
     if not _db_url:
         if os.environ.get("VERCEL"):
             tmp_db = "/tmp/game_deals.db"
-            orig_db = os.path.join(BASE_DIR, "game_deals.db")
-            if os.path.exists(orig_db):
-                if not os.path.exists(tmp_db) or os.path.getsize(tmp_db) < os.path.getsize(orig_db):
+            possible_origs = [
+                os.path.join(BASE_DIR, "game_deals.db"),
+                os.path.join(BASE_DIR, "api", "game_deals.db"),
+                os.path.join(os.getcwd(), "game_deals.db"),
+                "/var/task/game_deals.db",
+                "/var/task/api/game_deals.db",
+            ]
+            for orig in possible_origs:
+                if os.path.exists(orig) and os.path.getsize(orig) > 100000:
                     import shutil
                     try:
-                        shutil.copy2(orig_db, tmp_db)
+                        shutil.copy2(orig, tmp_db)
+                        break
                     except Exception:
                         pass
             _db_url = f"sqlite:///{tmp_db}"
