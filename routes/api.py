@@ -128,3 +128,16 @@ def active_deals():
             for d in deals
         ]
     )
+
+
+# Temporary debug endpoint — remove after Vercel routing is confirmed working
+@api_bp.route("/debug-env")
+def debug_env():
+    env_keys = [
+        "PATH_INFO", "SCRIPT_NAME", "REQUEST_METHOD",
+        "HTTP_X_MATCHED_PATH", "HTTP_X_FORWARDED_URI", "HTTP_X_FORWARDED_HOST",
+        "HTTP_X_FORWARDED_PROTO", "HTTP_X_NOW_ROUTE_MATCHES", "REQUEST_URI", "RAW_URI",
+    ]
+    data = {k: request.environ.get(k, "<not set>") for k in env_keys}
+    data["all_headers"] = dict(request.headers)
+    return jsonify(data)
