@@ -8,7 +8,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0">
 {% block extra_css %}{% endblock %}
 </head>
 <body style="font-family:'Poppins',sans-serif;">
@@ -155,12 +155,13 @@
 {% block extra_js %}{% endblock %}
 
 <!-- ╔══════════════════════════════════════╗ -->
-<!-- ║  VAULT — Floating Chatbot Widget     ║ -->
+<!-- ║  VAULT — Floating Chatbot Widget 2.0 ║ -->
 <!-- ╚══════════════════════════════════════╝ -->
 
 <!-- FAB trigger button -->
-<button id="gvChatFab" aria-label="Open Vault assistant">
+<button id="gvChatFab" aria-label="Open Vault assistant" title="Chat with Vault AI Assistant">
   <i class="fa-solid fa-robot"></i>
+  <span class="gv-fab-badge" id="gvChatBadge" style="display: none;">1</span>
 </button>
 
 <!-- Chat panel -->
@@ -172,25 +173,47 @@
       <i class="fa-solid fa-robot"></i>
     </div>
     <div class="gv-chat-title">
-      <strong>Vault</strong>
-      <span>Online — ready to help</span>
+      <div class="d-flex align-items-center gap-2">
+        <strong>Vault</strong>
+        <span class="gv-badge-ai">AI 2.0</span>
+      </div>
+      <span class="gv-status-text">Online &bull; Ready to help</span>
     </div>
-    <button id="gvChatClose" class="gv-chat-close" aria-label="Close chat">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
+    <div class="gv-chat-actions">
+      <button id="gvChatClear" class="gv-chat-action-btn" title="Clear chat history" aria-label="Clear chat history">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+      <button id="gvChatExpand" class="gv-chat-action-btn" title="Toggle expand" aria-label="Toggle expand">
+        <i class="fa-solid fa-expand"></i>
+      </button>
+      <button id="gvChatClose" class="gv-chat-close" title="Close assistant" aria-label="Close chat">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
   </div>
 
-  <!-- Messages -->
+  <!-- Messages Container -->
   <div id="gvChatMessages" aria-live="polite"></div>
 
-  <!-- Input bar -->
+  <!-- Quick Suggestion Prompts Bar -->
+  <div id="gvChatSuggestions" class="gv-chat-suggestions">
+    <button type="button" class="gv-sug-btn" data-query="🔥 Best Deals">🔥 Best Deals</button>
+    <button type="button" class="gv-sug-btn" data-query="🆓 Free Games">🆓 Free Games</button>
+    <button type="button" class="gv-sug-btn" data-query="💰 Games under $10">💰 Under $10</button>
+    <button type="button" class="gv-sug-btn" data-query="⭐ Top Rated Games">⭐ Top Rated</button>
+    <button type="button" class="gv-sug-btn" data-query="🎯 Check My Wishlist">🎯 My Wishlist</button>
+    <button type="button" class="gv-sug-btn" data-query="🎲 Surprise Me with a Game">🎲 Surprise Me</button>
+    <button type="button" class="gv-sug-btn" data-query="⚔️ Best RPG Deals">⚔️ RPG Deals</button>
+  </div>
+
+  <!-- Input Bar -->
   <div class="gv-chat-footer">
     <input
       id="gvChatInput"
       type="text"
-      placeholder="Ask about deals, free games…"
+      placeholder="Ask about deals, 'games under $10', compare games..."
       autocomplete="off"
-      maxlength="200"
+      maxlength="250"
     >
     <button id="gvChatSend" aria-label="Send message">
       <i class="fa-solid fa-paper-plane"></i>
@@ -199,6 +222,6 @@
 
 </div>
 
-<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chatbot.js') }}?v=2.0"></script>
 </body>
 </html>
