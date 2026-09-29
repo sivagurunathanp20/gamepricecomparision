@@ -19,34 +19,38 @@ class VercelPathMiddleware:
 
     def __call__(self, environ, start_response):
         path = None
-        matched = environ.get("HTTP_X_MATCHED_PATH")
-        if matched and matched not in ("/api/index", "/api", "/api/index.py"):
-            path = matched
+        m = environ.get("HTTP_X_MATCHED_PATH")
+        if m and m not in ("/api/index", "/api", "/api/index.py", "/api/"):
+            path = m
+
         if not path:
-            fwd = environ.get("HTTP_X_FORWARDED_URI")
-            if fwd and fwd not in ("/api/index", "/api", "/api/index.py"):
-                path = fwd
+            f = environ.get("HTTP_X_FORWARDED_URI")
+            if f and f not in ("/api/index", "/api", "/api/index.py", "/api/"):
+                path = f
+
         if not path:
-            req_uri = environ.get("REQUEST_URI") or environ.get("RAW_URI")
-            if req_uri and req_uri not in ("/api/index", "/api", "/api/index.py"):
-                path = req_uri
+            r = environ.get("REQUEST_URI") or environ.get("RAW_URI")
+            if r and r not in ("/api/index", "/api", "/api/index.py", "/api/"):
+                path = r
+
         if not path:
-            route_matches = environ.get("HTTP_X_NOW_ROUTE_MATCHES")
-            if route_matches:
+            rm = environ.get("HTTP_X_NOW_ROUTE_MATCHES")
+            if rm:
                 try:
-                    params = urllib.parse.parse_qs(route_matches)
+                    params = urllib.parse.parse_qs(rm)
                     for k in sorted(params.keys()):
                         val = params[k][0]
                         if val:
                             val = urllib.parse.unquote(val)
                             if not val.startswith("/"):
                                 val = "/" + val
-                            if val not in ("/api/index", "/api", "/api/index.py"):
+                            if val not in ("/api/index", "/api", "/api/index.py", "/api/"):
                                 path = val
                                 break
                 except Exception:
                     pass
 
+        curr = environ.get("PATH_INFO", "")
         if path:
             if "?" in path:
                 parts = path.split("?", 1)
@@ -56,10 +60,8 @@ class VercelPathMiddleware:
             if not path.startswith("/"):
                 path = "/" + path
             environ["PATH_INFO"] = path
-        else:
-            curr_path = environ.get("PATH_INFO", "")
-            if curr_path in ("/api/index", "/api", "/api/index.py", ""):
-                environ["PATH_INFO"] = "/"
+        elif curr in ("/api/index", "/api", "/api/index.py", "/api/", ""):
+            environ["PATH_INFO"] = "/"
 
         return self.wsgi_app(environ, start_response)
 
