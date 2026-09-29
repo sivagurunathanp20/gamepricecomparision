@@ -25,8 +25,11 @@ class Config:
     # DATABASE
     # ------------------------------------------------------------------
     _db_url = os.environ.get("DATABASE_URL")
-    if os.environ.get("VERCEL") and _db_url and "railway.internal" in _db_url:
-        # railway.internal is only reachable within Railway's private network
+    if os.environ.get("VERCEL") and _db_url and (
+        "railway.internal" in _db_url
+        or "railway.app" in _db_url
+    ):
+        # Railway hostnames are only reachable within Railway's private network
         _db_url = None
 
     if not _db_url:
